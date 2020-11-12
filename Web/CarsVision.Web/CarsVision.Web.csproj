@@ -9,8 +9,17 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\cars.json" />
+    <Content Remove="wwwroot\colors.json" />
+  </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\cars.json" />
+    <None Include="wwwroot\colors.json" />
   </ItemGroup>
 
   <ItemGroup>

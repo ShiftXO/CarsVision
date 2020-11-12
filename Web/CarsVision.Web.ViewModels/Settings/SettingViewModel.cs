@@ -1,9 +1,8 @@
 ﻿namespace CarsVision.Web.ViewModels.Settings
 {
+    using AutoMapper;
     using CarsVision.Data.Models;
     using CarsVision.Services.Mapping;
-
-    using AutoMapper;
 
     public class SettingViewModel : IMapFrom<Setting>, IHaveCustomMappings
     {
