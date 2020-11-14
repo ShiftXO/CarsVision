@@ -1,0 +1,52 @@
+/*---------------------
+  Services
+-----------------------*/
+.services__item {
+    padding-bottom: 60px;
+  }
+  
+  .services__item {
+    text-align: center;
+    padding: 36px 35px 40px;
+    border: 1px solid #ebebeb;
+    border-radius: 2px;
+    @include transition(all, .4s);
+    margin-bottom: 40px;
+  
+    &:hover {
+      box-shadow: 0px 6px 50px rgba(50, 15, 15, 0.05);
+      border: 1px solid transparent;
+  
+      a {
+        background: $primary-color;
+        border-color: $primary-color;
+        color: $white-color;
+      }
+    }
+  
+    h5 {
+      font-size: 20px;
+      color: $heading-color-2;
+      font-weight: 700;
+      margin-bottom: 12px;
+      margin-top: 20px;
+    }
+    
+    p {
+      margin-bottom: 20px;
+      color: #8d8d8d;
+    }
+  
+    a {
+      font-size: 15px;
+      color: $primary-color;
+      height: 40px;
+      width: 40px;
+      line-height: 40px;
+      text-align: center;
+      border-radius: 50%;
+      border: 1px solid #ebebeb;
+      display: inline-block;
+      @include transition(all, .3s);
+    }
+  }

@@ -1,0 +1,228 @@
+/*---------------------
+  Hero
+-----------------------*/
+.hero {
+    padding: 140px 0;
+}
+
+.hero__text {
+    padding-top: 110px;
+
+    .primary-btn {
+        margin-right: 16px;
+
+        img {
+            position: relative;
+            top: -2px;
+        }
+
+        &.more-btn {
+            background: transparent;
+            border: 1px solid $white-color;
+        }
+    }
+}
+
+.hero__text__title {
+    margin-bottom: 28px;
+
+    span {
+        font-size: 20px;
+        color: $white-color;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    h2 {
+        font-size: 60px;
+        color: $white-color;
+        font-weight: 700;
+        margin-top: 10px;
+    }
+}
+
+.hero__text__price {
+    position: relative;
+    padding-left: 140px;
+    margin-bottom: 55px;
+
+    .car-model {
+        font-size: 13px;
+        color: $heading-color-2;
+        font-weight: 700;
+        display: inline-block;
+        padding: 6px 14px;
+        background: $white-color;
+        border-radius: 2px;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    h2 {
+        font-size: 50px;
+        color: $white-color;
+        font-weight: 700;
+        line-height: 45px;
+
+        span {
+            font-size: 40px;
+        }
+    }
+}
+
+.hero__tab {
+
+    .nav-tabs {
+        border-bottom: none;
+
+        .nav-item {
+            margin-bottom: 5px;
+            margin-right: 5px;
+
+            .nav-link {
+                position: relative;
+                font-size: 15px;
+                font-weight: 700;
+                color: $heading-color-2;
+                display: inline-block;
+                padding: 7px 20px;
+                border: none;
+                border-radius: 2px;
+                background: $white-color;
+
+                &:after {
+                    position: absolute;
+                    content: "";
+                    width: 100%;
+                    height: 10px;
+                    left: 0;
+                    bottom: -7px;
+                    opacity: 0;
+                    background: $white-color;
+                    @include transition (0.3s);
+                }
+
+                &.active {
+                    &:after {
+                        opacity: 1;
+                        bottom: -7px;
+                   }
+                }
+            }
+        }
+    }
+}
+
+.hero__tab__form {
+    background: $white-color;
+    padding: 42px 40px 50px;
+    border-radius: 2px;
+
+    h2 {
+        color: $heading-color-2;
+        font-weight: 700;
+        margin-bottom: 22px;
+    }
+
+    form {
+
+        .select-list {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -20px;
+            
+            .select-list-item {
+                max-width: calc(50% - 20px);
+                float: left;
+                flex: 0 0 50%;
+                margin-right: 20px;
+                margin-bottom: 20px;
+
+                p {
+                    color: $heading-color-2;
+                    margin-bottom: 5px;
+                }
+
+                .nice-select {
+                    width: 100%;
+                    height: 40px;
+                    border: 1px solid #ebebeb;
+                    border-radius: 2px;
+
+                    .list {
+                        width: 100%;
+                        border-radius: 0;
+                        margin-top: 0;
+                    }
+
+                    &.open {
+                        
+                        span {
+                            display: block!important;
+                        }
+                    }
+                    &:after {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .car-price {
+            margin-bottom: 45px;
+
+            p {
+                color: $heading-color-2;
+                margin-bottom: 5px;
+                margin-bottom: 12px;
+            }
+
+            .price-range-wrap {
+                position: relative;
+
+                .ui-widget-content {
+                    height: 5px;
+                    background: rgba(45, 45, 45, 0.1);
+                    border: none;
+                    border-radius: 1px;
+                }
+
+                .ui-slider-horizontal .ui-slider-handle {
+                    top: -5px;
+                    margin-left: -4px;
+                }
+
+                .ui-slider .ui-slider-handle {
+                    width: 14px;
+                    height: 14px;
+                    background: $white-color;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
+
+                .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+                    border: 1.5px solid $primary-color;
+                }
+
+                .ui-slider .ui-slider-range {
+                    background: $primary-color;
+                }
+            }
+
+            .price-input {
+                position: absolute;
+                left: 89px;
+                top: -36px;
+
+                input {
+                    font-size: 15px;
+                    color: $heading-color-2;
+                    font-weight: 700;
+                    border: none;
+                    width: 180px;
+                }
+            }
+        }
+    }
+}

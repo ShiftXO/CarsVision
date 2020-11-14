@@ -1,0 +1,176 @@
+/*---------------------
+  Footer
+-----------------------*/
+.footer {
+  padding-top: 60px;
+  padding-bottom: 30px;
+}
+
+.footer__contact {
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgb(255, 255, 255, 0.2);
+  margin-bottom: 65px;
+}
+
+.footer__contact__title {
+
+  h2 {
+    font-size: 40px;
+    color: $white-color;
+    font-weight: 700;
+  }
+}
+
+.footer__contact__option {
+  text-align: right;
+
+  .option__item {
+    font-size: 15px;
+    color: $white-color;
+    background: $primary-color;
+    display: inline-block;
+    font-weight: 700;
+    padding: 14px 18px 14px 24px;
+    margin-right: 16px;
+    border-radius: 2px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.email {
+      color: $heading-color-2;
+      background: $white-color;
+      
+      i {
+        color: $primary-color;
+      }
+    }
+
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+.footer__about {
+  margin-bottom: 30px;
+
+  p {
+    color: #8d8d8d;
+    margin-bottom: 25px;
+  }
+}
+
+.footer__logo {
+  margin-bottom: 20px;
+
+  a {
+    display: inline-block;
+  }
+}
+
+.footer__social {
+  margin-bottom: 20px;
+
+  a {
+    display: inline-block;
+    height: 38px;
+    width: 38px;
+    font-size: 15px;
+    color: $white-color;
+    line-height: 38px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 6px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.facebook {
+      background: #324975;
+    }
+
+    &.twitter {
+      background: #2C85AE;
+    }
+
+    &.google {
+      background: #DC4438;
+    }
+
+    &.skype {
+      background: #3EAFF0;
+    }
+  }
+}
+
+.footer__copyright__text {
+  margin-bottom: 0!important;
+  
+  a {
+    font-weight: 700;
+    color: $primary-color;
+  }
+  i {
+    color: #cc1111;
+  }
+}
+
+.footer__widget {
+  margin-bottom: 30px;
+
+  h5 {
+    color: $white-color;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  ul {
+
+    li {
+      list-style: none;
+      
+      a {
+        font-size: 15px;
+        color: #8d8d8d;
+        line-height: 36px;
+      }
+
+      i {
+        margin-right: 2px;
+      }
+    }
+  }
+}
+
+.footer__brand {
+  overflow: hidden;
+  margin-bottom: 30px;
+
+  h5 {
+    color: $white-color;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  ul {
+    width: 50%;
+    float: left;
+
+    li {
+      list-style: none;
+      
+      a {
+        font-size: 15px;
+        color: #8d8d8d;
+        line-height: 36px;
+      }
+
+      i {
+        margin-right: 2px;
+      }
+    }
+  }
+}

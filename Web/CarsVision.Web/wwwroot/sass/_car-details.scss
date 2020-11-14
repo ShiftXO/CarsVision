@@ -1,0 +1,231 @@
+/*---------------------
+  Car Details
+-----------------------*/
+.car-details {
+    padding-bottom: 70px;
+}
+
+.car__details__pic {
+    margin-bottom: 50px;
+}
+
+.car__details__pic__large {
+    margin-bottom: 20px;
+
+    img {
+        min-width: 100%;
+    }
+}
+
+.car-thumbs {
+
+    .ct {
+        
+        img {
+            cursor: pointer;
+        }
+    }
+}
+
+.car__details__tab {
+
+    .nav-tabs {
+        border-bottom: none;
+        background: #f7f7f7;
+        padding: 0 30px;
+
+        .nav-item {
+            display: inline-block;
+            margin-right: 62px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+            .nav-link {
+                font-size: 20px;
+                color: #707070;
+                font-weight: 700;
+                border: none;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                padding: 22px 0 16px;
+                position: relative;
+
+                &:after {
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    height: 4px;
+                    width: 100%;
+                    background: $primary-color;
+                    content: '';
+                    opacity: 0;
+                }
+
+                &.active {
+                    background-color: transparent;
+
+                    &:after {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+
+    .tab-content {
+        padding-top: 45px;
+    }
+}
+
+.car__details__tab__info {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+.car__details__tab__info__item {
+    margin-bottom: 30px;
+
+    h5 {
+        color: $heading-color;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    ul {
+
+        li {
+            list-style: none;
+            font-size: 15px;
+            color: #707070;
+            line-height: 36px;
+
+            i {
+                color: $primary-color;
+                margin-right: 8px;
+                font-size: 10px;
+            }
+        }
+    }
+}
+
+.car__details__tab__feature__item {
+    margin-bottom: 30px;
+
+    h5 {
+        color: $heading-color;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    ul {
+
+        li {
+            list-style: none;
+            font-size: 15px;
+            color: #707070;
+            line-height: 36px;
+
+            i {
+                color: $primary-color;
+                margin-right: 8px;
+                font-size: 10px;
+            }
+        }
+    }
+}
+
+.car__details__sidebar {
+    padding: 25px 30px 20px;
+    background: #f7f7f7;
+}
+
+.car__details__sidebar__model {
+    margin-bottom: 5px;
+
+    ul {
+        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+        padding-bottom: 6px;
+        margin-bottom: 20px;
+
+        li {
+            list-style: none;
+            font-size: 15px;
+            color: #727171;
+            line-height: 36px;
+            overflow: hidden;
+
+            span {
+                color: $heading-color;
+                font-weight: 700;
+                float: right;
+            }
+        }
+    }
+
+    .primary-btn {
+        display: block;
+        text-align: center;
+        border-radius: 0;
+        padding: 12px 0 10px;
+
+        i {
+            margin-right: 5px;
+        }
+    }
+
+    p {
+        color: $heading-color;
+        padding: 10px 0;
+        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+        text-align: center;
+        margin-bottom: 0;
+    }
+}
+
+.car__details__sidebar__payment {
+
+    ul {
+        margin-bottom: 30px;
+
+        li {
+            list-style: none;
+            font-size: 15px;
+            color: #727171;
+            line-height: 36px;
+            overflow: hidden;
+
+            &:last-child {
+
+                span {
+                    font-size: 20px;
+                }
+            }
+
+            span {
+                color: $heading-color;
+                font-weight: 700;
+                float: right;
+            }
+        }
+    }
+
+    .primary-btn {
+        display: block;
+        border-radius: 0;
+        text-align: center;
+        margin-bottom: 10px;
+        padding: 12px 0 10px;
+
+        i {
+            margin-right: 5px;
+        }
+
+        &.sidebar-btn {
+            background: $white-color;
+            color: #727171;
+            border: 1px solid #ebebeb;
+        }
+    }
+}
