@@ -8,7 +8,7 @@
     using AngleSharp;
     using CarsVision.Services.Models;
 
-    public class CarsScraperService : ICarsScraperService
+    public class CarsScraperService : ICarsScrapperService
     {
         private static readonly string EmptyString = string.Empty;
 

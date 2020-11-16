@@ -1,6 +1,6 @@
 ﻿namespace CarsVision.Services
 {
-    public interface ICarsScraperService
+    public interface ICarsScrapperService
     {
         void PopulateDb(int pages);
     }
