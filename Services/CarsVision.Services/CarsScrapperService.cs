@@ -8,14 +8,14 @@
     using AngleSharp;
     using CarsVision.Services.Models;
 
-    public class CarsScraperService : ICarsScrapperService
+    public class CarsScrapperService : ICarsScrapperService
     {
         private static readonly string EmptyString = string.Empty;
 
         private readonly IConfiguration config;
         private readonly IBrowsingContext context;
 
-        public CarsScraperService()
+        public CarsScrapperService()
         {
             this.config = Configuration.Default.WithDefaultLoader();
             this.context = BrowsingContext.New(this.config);
