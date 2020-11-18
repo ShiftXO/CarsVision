@@ -4,7 +4,7 @@
 
     public enum Gearbox
     {
-        [Display(Name = "")]
+        [Display(Name = "All")]
         None = 0,
         Manual = 1,
         Automatic = 2,

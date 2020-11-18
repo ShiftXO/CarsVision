@@ -4,7 +4,7 @@
 
     public enum EngineType
     {
-        [Display(Name = "")]
+        [Display(Name = "All")]
         Unknown = 0,
         Gasoline = 1,
         Diesel = 2,

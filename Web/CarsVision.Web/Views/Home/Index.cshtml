@@ -1,9 +1,65 @@
-﻿@using CarsVision.Common
+﻿@model ICollection<CarsVision.Web.ViewModels.Home.MakesViewModel>
+@using CarsVision.Common
 @{
     this.ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to @GlobalConstants.SystemName!</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="form container">
+    <!-- Default form register -->
+    <form method="post" class="text-center border border-light p-5">
+        <h5 class="card-header info-color white-text text-center py-4">
+            <strong>Search car</strong>
+        </h5>
+        <div class="form-row mb-3 text-left">
+            <div class="col">
+                <label>Make</label>
+                <select id="makes" name="make" class="form-control" onchange="LoadModels()">
+                    <option value="All">All</option>
+                    @foreach (var make in Model)
+                    {
+                        <option value="@make.Name">@make.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col">
+                <label>Model</label>
+                <select id="models" name="model" class="form-control">
+                    <option value="All">All</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row mb-3 text-left">
+            <div class="col">
+                <label>Max. Price</label>
+                <input name="price" type="number" class="form-control mb-4">
+            </div>
+            <div class="col">
+                <label>Year</label>
+                <select name="year" class="form-control">
+                    <option value="all">All</option>
+                    @for (int year = DateTime.UtcNow.Year; year >= 1930; year--)
+                    {
+                        <option value="@year">@year</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-row mb-3 text-left">
+            <div class="col">
+                <label>Engine type</label>
+                <select name="EngineType" class="form-control" asp-items="@Html.GetEnumSelectList<CarsVision.Data.Models.EngineType>()">
+                </select>
+            </div>
+            <div class="col">
+                <label>Gearbox</label>
+                <select name="gearbox" class="form-control" asp-items="@Html.GetEnumSelectList<CarsVision.Data.Models.Gearbox>()">
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-info my-4 btn-block" type="submit">Search</button>
+    </form>
 </div>
+
+<!-- list newest cars / latest car post-->

@@ -16,11 +16,24 @@
             this.makesRepository = makesRepository;
         }
 
-        public IEnumerable<T> GetAll<T>()
+        public IEnumerable<T> GetAllNames<T>()
         {
-            var query = this.makesRepository.All().OrderBy(x => x.Name);
+            var query = this.makesRepository.AllAsNoTracking().OrderBy(x => x.Name);
 
             return query.To<T>().ToList();
+        }
+
+        public IEnumerable<T> GetAll<T>()
+        {
+            var query = this.makesRepository.AllAsNoTracking().OrderBy(x => x.Name);
+
+            return query.To<T>().ToList();
+        }
+
+        public ICollection<string> GetMakeModels(string makeName)
+        {
+            var make = this.makesRepository.All().Where(x => x.Name == makeName).Select(x => x.Models.Select(d => d.Name)).First();
+            return make.ToList();
         }
     }
 }
