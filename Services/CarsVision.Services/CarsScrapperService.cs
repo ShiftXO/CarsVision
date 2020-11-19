@@ -3,9 +3,12 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using AngleSharp;
+    using CarsVision.Data.Common.Repositories;
+    using CarsVision.Data.Models;
     using CarsVision.Services.Models;
 
     public class CarsScrapperService : ICarsScrapperService
@@ -14,32 +17,85 @@
 
         private readonly IConfiguration config;
         private readonly IBrowsingContext context;
+        private readonly IDeletableEntityRepository<Car> carsRepository;
+        private readonly IDeletableEntityRepository<Make> makesRepository;
+        private readonly IDeletableEntityRepository<Model> modelsRepository;
+        private readonly IDeletableEntityRepository<Extra> extrasRepository;
+        private readonly IRepository<Color> colorRepository;
 
-        public CarsScrapperService()
+        public CarsScrapperService(
+            IDeletableEntityRepository<Car> carsRepository,
+            IDeletableEntityRepository<Make> makesRepository,
+            IDeletableEntityRepository<Model> modelsRepository,
+            IDeletableEntityRepository<Extra> extrasRepository,
+            IRepository<Color> colorRepository)
         {
             this.config = Configuration.Default.WithDefaultLoader();
             this.context = BrowsingContext.New(this.config);
+
+            this.carsRepository = carsRepository;
+            this.makesRepository = makesRepository;
+            this.modelsRepository = modelsRepository;
+            this.extrasRepository = extrasRepository;
+            this.colorRepository = colorRepository;
         }
 
-        public void PopulateDb(int pagesCount)
+        public async void PopulateDb(int pagesCount)
         {
             var bag = new ConcurrentBag<CarDto>();
-            Parallel.For(1, pagesCount, (i) =>
+
+            Parallel.For(1, 2, (i) =>
             {
-                try
+                var cars = this.GetCar(i);
+                Parallel.ForEach(cars, (car) =>
                 {
-                    var cars = this.GetCar(i);
-                    Parallel.ForEach(cars, (car) =>
-                     {
-                         bag.Add(car);
-                     });
-                }
-                catch
-                {
-                }
+                    bag.Add(car);
+                });
             });
 
-            // TODO: Populate Db
+            await this.AddCarToDbAsync(bag);
+            await this.carsRepository.SaveChangesAsync();
+        }
+
+        private async Task AddCarToDbAsync(ConcurrentBag<CarDto> cars)
+        {
+            foreach (var car in cars)
+            {
+                var makeId = await this.GetOrCreateMakeAsync(car.Make);
+                var modelId = await this.GetOrCreateModelAsync(makeId, car.Model);
+                var colorId = await this.GetOrCreateColorAsync(car.ColorName);
+
+                await this.CreateExtrasAsync(car.ExtraNames);
+
+                var newCar = new Car
+                {
+                    MakeId = makeId,
+                    ModelId = modelId,
+                    Modification = car.Modification,
+                    ImageUrl = car.ImageUrl,
+                    Mileage = car.Mileage,
+                    Power = car.Power,
+                    ColorId = colorId,
+                    Price = car.Price,
+                    Location = car.Location,
+                    Year = car.Year,
+                    Description = car.Description,
+                    Currency = (Currency)Enum.Parse(typeof(Currency), car.Currency == "лв." ? "BGN" : car.Currency, true),
+                    EngineType = (EngineType)Enum.Parse(typeof(EngineType), car.EngineType, true),
+                    Gearbox = (Gearbox)Enum.Parse(typeof(Gearbox), car.Gearbox, true),
+                    EuroStandard = (EuroStandard)Enum.Parse(typeof(EuroStandard), car.EuroStandard, true),
+                };
+
+                var extrasList = await this.GetExtrasAsync(car.ExtraNames, newCar.Id);
+
+                newCar.Extras = extrasList;
+
+                await this.carsRepository.AddAsync(newCar);
+            }
+
+            await this.carsRepository.SaveChangesAsync();
+
+            ;
         }
 
         private ConcurrentBag<CarDto> GetCar(int id)
@@ -47,7 +103,7 @@
             var bag = new ConcurrentBag<CarDto>();
 
             var page = this.context
-                .OpenAsync($"https://www.mobile.bg/pcgi/mobile.cgi?act=3&slink=hs49ek&f1={id}")
+                .OpenAsync($"https://www.mobile.bg/pcgi/mobile.cgi?act=3&slink=htp0dq&f1={id}")
                 .GetAwaiter().GetResult();
 
             for (int i = 23; i <= 42; i++)
@@ -174,6 +230,41 @@
                 carMileage = carDataArr[4];
             }
 
+            if (carEngineType == "Дизелов")
+            {
+                carEngineType = "Diesel";
+            }
+            else if (carEngineType == "Бензинов")
+            {
+                carEngineType = "Gasoline";
+            }
+            else if (carEngineType == "Електрически")
+            {
+                carEngineType = "Electric";
+            }
+            else
+            {
+                carEngineType = "Hybrid";
+            }
+
+            if (carGearbox == "Ръчна")
+            {
+                carGearbox = "Manual";
+            }
+            else if (carGearbox == "Автоматична")
+            {
+                carGearbox = "Automatic";
+            }
+            else if (carGearbox == "Полуавтоматична")
+            {
+                carGearbox = "Semi_Automatic";
+            }
+
+            carEuroStandard = carEuroStandard.Replace("Евро ", "Euro_");
+
+            carPower = carPower.Replace("к.с.", EmptyString);
+            carMileage = carMileage.Replace("км", EmptyString);
+
             var carNameQuery = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > div:nth-child(16) > table > tbody > tr > td:nth-child(1) > div:nth-child(1) > h1");
             var priceQuery = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > div:nth-child(16) > table > tbody > tr > td:nth-child(2) > div > strong");
 
@@ -250,8 +341,8 @@
             }
             else if (priceData[0].Length == 1)
             {
-                carPrice = priceData[0];
-                carCurrency = priceData[1];
+                carPrice = priceData[0] + priceData[1];
+                carCurrency = priceData[2];
             }
 
             var extrasArr = carExtras.Split("\n");
@@ -293,6 +384,114 @@
             };
 
             return car;
+        }
+
+        private async Task<int> GetOrCreateMakeAsync(string carMake)
+        {
+            var make = this.makesRepository
+                .AllAsNoTracking()
+                .FirstOrDefault(x => x.Name == carMake);
+
+            if (make != null)
+            {
+                return make.Id;
+            }
+
+            make = new Make
+            {
+                Name = carMake,
+            };
+
+            await this.makesRepository.AddAsync(make);
+            await this.makesRepository.SaveChangesAsync();
+
+            return make.Id;
+        }
+
+        private async Task<int> GetOrCreateModelAsync(int carMakeId, string modelName)
+        {
+            var model = this.modelsRepository
+                .AllAsNoTracking().FirstOrDefault(x => x.MakeId == carMakeId);
+
+            if (model != null)
+            {
+                return model.Id;
+            }
+
+            model = new Model
+            {
+                MakeId = carMakeId,
+                Name = modelName,
+            };
+
+            await this.modelsRepository.AddAsync(model);
+            await this.modelsRepository.SaveChangesAsync();
+
+            return model.Id;
+        }
+
+        private async Task<int> GetOrCreateColorAsync(string colorName)
+        {
+            var color = this.colorRepository
+                .AllAsNoTracking().FirstOrDefault(x => x.Name == colorName);
+
+            if (color != null)
+            {
+                return color.Id;
+            }
+
+            color = new Color
+            {
+                Name = colorName,
+            };
+
+            await this.colorRepository.AddAsync(color);
+            await this.colorRepository.SaveChangesAsync();
+
+            return color.Id;
+        }
+
+        private async Task CreateExtrasAsync(ICollection<string> extras)
+        {
+            foreach (var extraName in extras)
+            {
+                var extra = this.extrasRepository
+                    .AllAsNoTracking().FirstOrDefault(x => x.Name == extraName);
+
+                if (extra != null)
+                {
+                    continue;
+                }
+
+                extra = new Extra
+                {
+                    Name = extraName,
+                };
+
+                await this.extrasRepository.AddAsync(extra);
+                await this.extrasRepository.SaveChangesAsync();
+            }
+        }
+
+        private async Task<List<CarsExtras>> GetExtrasAsync(ICollection<string> extras, int carId)
+        {
+            var extrasToReturn = new List<CarsExtras>();
+
+            foreach (var extraName in extras)
+            {
+                var extra = this.extrasRepository
+                    .AllAsNoTracking().FirstOrDefault(x => x.Name == extraName);
+
+                var carExtra = new CarsExtras
+                {
+                    ExtraId = extra.Id,
+                    CarId = carId,
+                };
+
+                extrasToReturn.Add(carExtra);
+            }
+
+            return extrasToReturn;
         }
     }
 }

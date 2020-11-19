@@ -7,7 +7,7 @@
         [Display(Name = "")]
         Unknown = 0,
         [Display(Name = "лв.")]
-        BNG = 1,
+        BGN = 1,
         USD = 2,
         EUR = 3,
     }

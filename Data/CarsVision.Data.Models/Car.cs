@@ -9,7 +9,7 @@
         public Car()
         {
             this.Pictures = new List<Picture>();
-            this.Extras = new List<Extra>();
+            this.Extras = new List<CarsExtras>();
         }
 
         public string UserId { get; set; }
@@ -58,6 +58,6 @@
 
         public virtual ICollection<Picture> Pictures { get; set; }
 
-        public virtual ICollection<Extra> Extras { get; set; }
+        public virtual ICollection<CarsExtras> Extras { get; set; }
     }
 }

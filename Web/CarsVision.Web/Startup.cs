@@ -8,6 +8,7 @@
     using CarsVision.Data.Models;
     using CarsVision.Data.Repositories;
     using CarsVision.Data.Seeding;
+    using CarsVision.Services;
     using CarsVision.Services.Data;
     using CarsVision.Services.Mapping;
     using CarsVision.Services.Messaging;
@@ -68,6 +69,7 @@
             services.AddTransient<ICarsService, CarsService>();
             services.AddTransient<IMakesService, MakesService>();
             services.AddTransient<IColorsService, ColorsService>();
+            services.AddTransient<ICarsScrapperService, CarsScrapperService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

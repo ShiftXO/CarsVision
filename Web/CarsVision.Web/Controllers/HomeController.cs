@@ -2,6 +2,7 @@
 {
     using System.Diagnostics;
 
+    using CarsVision.Services;
     using CarsVision.Services.Data;
     using CarsVision.Web.ViewModels;
     using CarsVision.Web.ViewModels.Cars;
@@ -12,18 +13,21 @@
     {
         private readonly IMakesService makesService;
         private readonly ICarsService carsService;
+        private readonly ICarsScrapperService carsScrapperService;
 
-        public HomeController(IMakesService makesService, ICarsService carsService)
+        public HomeController(IMakesService makesService, ICarsService carsService, ICarsScrapperService carsScrapperService)
         {
             this.makesService = makesService;
             this.carsService = carsService;
+            this.carsScrapperService = carsScrapperService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var viewModel = this.makesService.GetAllNames<MakesViewModel>();
-            return this.View(viewModel);
+            this.carsScrapperService.PopulateDb(10);
+            // var viewModel = this.makesService.GetAllNames<MakesViewModel>();
+            return this.View();
         }
 
         [HttpPost]
