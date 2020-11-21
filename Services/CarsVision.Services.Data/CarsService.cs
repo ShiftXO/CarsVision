@@ -57,10 +57,10 @@
                 IsVIP = carInput.IsVIP,
                 Location = carInput.Location,
                 Description = carInput.Description,
-                EuroStandard = Enum.Parse<EuroStandard>(carInput.EuroStandart.ToString()),
+                EuroStandard = Enum.Parse<EuroStandard>(carInput.EuroStandard.ToString()),
                 Currency = Enum.Parse<Currency>(carInput.Currency.ToString()),
                 Gearbox = Enum.Parse<Gearbox>(carInput.Gearbox.ToString()),
-                EngineType = Enum.Parse<EngineType>(carInput.Fuel.ToString()),
+                EngineType = Enum.Parse<EngineType>(carInput.EngineType.ToString()),
                 ColorId = colorId,
             };
 

@@ -2,6 +2,6 @@
 {
     public interface ICarsScrapperService
     {
-        void PopulateDb(int pages);
+        void PopulateDb(int pagesCount);
     }
 }

@@ -25,9 +25,8 @@
         [HttpGet]
         public IActionResult Index()
         {
-            this.carsScrapperService.PopulateDb(10);
-            // var viewModel = this.makesService.GetAllNames<MakesViewModel>();
-            return this.View();
+            var viewModel = this.makesService.GetAllNames<MakesViewModel>();
+            return this.View(viewModel);
         }
 
         [HttpPost]

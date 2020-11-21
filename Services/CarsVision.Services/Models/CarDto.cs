@@ -8,7 +8,7 @@
     {
         public CarDto()
         {
-            this.ExtraNames = new List<string>();
+            this.ExtraNames = new HashSet<string>();
         }
 
         public string Make { get; set; }

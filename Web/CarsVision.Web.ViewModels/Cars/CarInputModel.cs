@@ -3,43 +3,59 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    using CarsVision.Data.Models;
+
     public class CarInputModel
     {
+        [Required]
         public string Make { get; set; }
 
+        [Required]
         public string Model { get; set; }
 
         public string Modification { get; set; }
 
-        public int Fuel { get; set; }
+        [Required]
+        [Range(1, 7)]
+        public EngineType EngineType { get; set; }
 
         public int Power { get; set; }
 
         public string ImageUrl { get; set; }
 
-        public int EuroStandart { get; set; }
+        public EuroStandard EuroStandard { get; set; }
 
+        [Required]
         [Range(1, 3)]
-        public int Gearbox { get; set; }
+        public Gearbox Gearbox { get; set; }
 
         [Range(1, 11)]
-        public int Category { get; set; }
+        public Category Category { get; set; }
 
+        [Required]
+        [Range(300, 2_000_000)]
         public int Price { get; set; }
 
-        public string Currency { get; set; }
+        [Required]
+        [Range(1, 3)]
+        public Currency Currency { get; set; }
 
+        [Required]
         public string Month { get; set; }
 
         // [CurrentYearMaxValue(1930)]
-        public int Year { get; set; }
+        [Required]
+        public string Year { get; set; }
 
+        [Required]
         public int Mileage { get; set; }
 
-        public int Color { get; set; }
+        public string Color { get; set; }
 
+        [Required]
         public string Location { get; set; }
 
+        [Required]
         public string Validity { get; set; }
 
         public bool IsVIP { get; set; }

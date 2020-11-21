@@ -15,12 +15,12 @@
     {
         private static readonly string EmptyString = string.Empty;
 
-        private readonly IConfiguration config;
         private readonly IBrowsingContext context;
         private readonly IDeletableEntityRepository<Car> carsRepository;
         private readonly IDeletableEntityRepository<Make> makesRepository;
         private readonly IDeletableEntityRepository<Model> modelsRepository;
         private readonly IDeletableEntityRepository<Extra> extrasRepository;
+        private readonly IRepository<CarsExtras> carsExtrasRepository;
         private readonly IRepository<Color> colorRepository;
 
         public CarsScrapperService(
@@ -28,16 +28,18 @@
             IDeletableEntityRepository<Make> makesRepository,
             IDeletableEntityRepository<Model> modelsRepository,
             IDeletableEntityRepository<Extra> extrasRepository,
+            IRepository<CarsExtras> carsExtrasRepository,
             IRepository<Color> colorRepository)
         {
-            this.config = Configuration.Default.WithDefaultLoader();
-            this.context = BrowsingContext.New(this.config);
-
             this.carsRepository = carsRepository;
             this.makesRepository = makesRepository;
             this.modelsRepository = modelsRepository;
             this.extrasRepository = extrasRepository;
             this.colorRepository = colorRepository;
+            this.carsExtrasRepository = carsExtrasRepository;
+
+            var config = Configuration.Default.WithDefaultLoader();
+            this.context = BrowsingContext.New(config);
         }
 
         public async void PopulateDb(int pagesCount)
@@ -46,26 +48,23 @@
 
             Parallel.For(1, 2, (i) =>
             {
-                var cars = this.GetCar(i);
-                Parallel.ForEach(cars, (car) =>
+                var cars = this.GetCars(i).GetAwaiter().GetResult();
+                foreach (var car in cars)
                 {
                     bag.Add(car);
-                });
+                }
             });
 
-            await this.AddCarToDbAsync(bag);
-            await this.carsRepository.SaveChangesAsync();
-        }
-
-        private async Task AddCarToDbAsync(ConcurrentBag<CarDto> cars)
-        {
-            foreach (var car in cars)
+            foreach (var car in bag)
             {
-                var makeId = await this.GetOrCreateMakeAsync(car.Make);
-                var modelId = await this.GetOrCreateModelAsync(makeId, car.Model);
-                var colorId = await this.GetOrCreateColorAsync(car.ColorName);
+                if (car == null)
+                {
+                    continue;
+                }
 
-                await this.CreateExtrasAsync(car.ExtraNames);
+                var makeId = this.GetOrCreateMakeAsync(car.Make.Trim()).GetAwaiter().GetResult();
+                var modelId = this.GetOrCreateModelAsync(makeId, car.Model.Trim()).GetAwaiter().GetResult();
+                var colorId = this.GetOrCreateColorAsync(car.ColorName.Trim()).GetAwaiter().GetResult();
 
                 var newCar = new Car
                 {
@@ -86,159 +85,130 @@
                     EuroStandard = (EuroStandard)Enum.Parse(typeof(EuroStandard), car.EuroStandard, true),
                 };
 
-                var extrasList = await this.GetExtrasAsync(car.ExtraNames, newCar.Id);
+                await this.carsRepository.AddAsync(newCar);
+                await this.carsRepository.SaveChangesAsync();
 
-                newCar.Extras = extrasList;
+                var extras = this.GetOrCreateExtrasAsync(car.ExtraNames, newCar.Id).GetAwaiter().GetResult();
+                newCar.Extras = extras;
 
                 await this.carsRepository.AddAsync(newCar);
             }
 
+            // await this.AddCarToDbAsync(bag);
             await this.carsRepository.SaveChangesAsync();
-
-            ;
         }
 
-        private ConcurrentBag<CarDto> GetCar(int id)
+        private async Task AddCarToDbAsync(ConcurrentBag<CarDto> cars)
         {
-            var bag = new ConcurrentBag<CarDto>();
-
-            var page = this.context
-                .OpenAsync($"https://www.mobile.bg/pcgi/mobile.cgi?act=3&slink=htp0dq&f1={id}")
-                .GetAwaiter().GetResult();
-
-            for (int i = 23; i <= 42; i++)
+            foreach (var car in cars)
             {
-                var carUrlQuery = page.QuerySelectorAll($"#mainholder > table:nth-child(4) > tbody > tr:nth-child(1) > td:nth-child(1) > form:nth-child(4) > table:nth-child({i}) > tbody > tr:nth-child(2) > td:nth-child(2) > a");
+                if (car == null)
+                {
+                    continue;
+                }
 
-                var carUrlValue = carUrlQuery[0].OuterHtml.Split("class")[0].ToString();
+                var makeId = await this.GetOrCreateMakeAsync(car.Make.Trim());
+                var modelId = await this.GetOrCreateModelAsync(makeId, car.Model.Trim());
+                var colorId = await this.GetOrCreateColorAsync(car.ColorName.Trim());
 
-                carUrlValue = carUrlValue.Split("<a href=", StringSplitOptions.RemoveEmptyEntries)[0];
+                var newCar = new Car
+                {
+                    MakeId = makeId,
+                    ModelId = modelId,
+                    Modification = car.Modification,
+                    ImageUrl = car.ImageUrl,
+                    Mileage = car.Mileage,
+                    Power = car.Power,
+                    ColorId = colorId,
+                    Price = car.Price,
+                    Location = car.Location,
+                    Year = car.Year,
+                    Description = car.Description,
+                    Currency = (Currency)Enum.Parse(typeof(Currency), car.Currency == "лв." ? "BGN" : car.Currency, true),
+                    EngineType = (EngineType)Enum.Parse(typeof(EngineType), car.EngineType, true),
+                    Gearbox = (Gearbox)Enum.Parse(typeof(Gearbox), car.Gearbox, true),
+                    EuroStandard = (EuroStandard)Enum.Parse(typeof(EuroStandard), car.EuroStandard, true),
+                };
 
-                var carUrl = carUrlValue.Replace("\"", EmptyString).ToString();
+                await this.carsRepository.AddAsync(newCar);
+                await this.carsRepository.SaveChangesAsync();
 
-                carUrl = carUrl.Replace("\"", EmptyString);
-                carUrl = "https:" + carUrl;
+                var extras = await this.GetOrCreateExtrasAsync(car.ExtraNames, newCar.Id);
+                newCar.Extras = extras;
 
-                var car = this.GetData(carUrl);
-                bag.Add(car);
             }
 
-            return bag;
+            await this.carsRepository.SaveChangesAsync();
+        }
+
+        private async Task<ConcurrentBag<CarDto>> GetCars(int currentPage)
+        {
+            var carDtoBag = new ConcurrentBag<CarDto>();
+
+            var page = await this.context
+                .OpenAsync($"https://www.cars.bg/carslist.php?page={currentPage}");
+
+            var carUrlQuery = page.QuerySelectorAll($"#listContainer > div > div > div > div > div > div > div > div:nth-child(2)");
+
+            foreach (var entry in carUrlQuery)
+            {
+                var carUrl = entry.OuterHtml.Split("\"")[1];
+
+                var car = this.GetData(carUrl);
+                carDtoBag.Add(car);
+            }
+
+            return carDtoBag;
         }
 
         private CarDto GetData(string url)
         {
             var document = this.context.OpenAsync(url).GetAwaiter().GetResult();
 
-            var carDataQuery = document.QuerySelector(".dilarData");
-            var carDataString = carDataQuery.TextContent.Trim();
-            var carDataArr = carDataString
-                .Replace("Дата на производство", string.Empty)
-                .Replace("Тип двигател", EmptyString)
-                .Replace("Мощност", EmptyString)
-                .Replace("Евростандарт", EmptyString)
-                .Replace("Скоростна кутия", EmptyString)
-                .Replace("Категория", EmptyString)
-                .Replace("Пробег", EmptyString)
-                .Replace("Цвят", EmptyString)
-                .Split("\n");
+            var carDataQuery = document.QuerySelector("#main-content > div > div:nth-child(1) > div > div:nth-child(2) > h2");
+            var carDataString = carDataQuery.TextContent.Split(" ", 3);
 
+            var carDesc = document.QuerySelector("#main-content > div > div:nth-child(1) > div > div.text-copy");
+            var carDataArr = carDesc.TextContent.Trim().Split(',');
+
+            // power, cubic,evro, nov vnos
             var carProductionMonth = EmptyString;
             var carProductionYear = EmptyString;
+            var carCategory = EmptyString;
             var carEngineType = EmptyString;
+            var carMileage = EmptyString;
+            var carGearbox = EmptyString;
+            var carColor = EmptyString;
             var carPower = EmptyString;
             var carEuroStandard = EmptyString;
-            var carGearbox = EmptyString;
-            var carCategory = EmptyString;
-            var carMileage = EmptyString;
-            var carColor = EmptyString;
 
-            if (!carDataString.Contains("Пробег"))
+            if (carDesc.TextContent.Contains("EURO") && carDesc.TextContent.Contains("см3") && carDesc.TextContent.Contains("к.с") && carDesc.TextContent.Contains("нов внос"))
             {
-                throw new InvalidOperationException();
-            }
-
-            carProductionMonth = carDataArr[0].Split()[0];
-            carProductionYear = carDataArr[0].Split()[1];
-
-            if (carDataString.Contains("Мощ") && carDataString.Contains("Евро") && carDataString.Contains("Цвят"))
-            {
-                carEngineType = carDataArr[1];
-                carPower = carDataArr[2];
-                carEuroStandard = carDataArr[3];
-                carGearbox = carDataArr[4];
-                carCategory = carDataArr[5];
+                carProductionMonth = carDataArr[0].Split()[0];
+                carProductionYear = carDataArr[0].Split()[1];
+                carCategory = carDataArr[1];
+                carEngineType = carDataArr[5];
                 carMileage = carDataArr[6];
-                carColor = carDataArr[7];
-            }
-            else if (carDataString.Contains("Мощ") && carDataString.Contains("Евро"))
-            {
-                carEngineType = carDataArr[1];
-                carPower = carDataArr[2];
-                carEuroStandard = carDataArr[3];
-                carGearbox = carDataArr[4];
-                carCategory = carDataArr[5];
-                carMileage = carDataArr[6];
-            }
-            else if (carDataString.Contains("Мощ") && carDataString.Contains("Цвят"))
-            {
-                carEngineType = carDataArr[1];
-                carPower = carDataArr[2];
-                carGearbox = carDataArr[3];
-                carCategory = carDataArr[4];
-                carMileage = carDataArr[5];
-                carColor = carDataArr[6];
-            }
-            else if (carDataString.Contains("Евро") && carDataString.Contains("Цвят"))
-            {
-                carEngineType = carDataArr[1];
-                carEuroStandard = carDataArr[2];
-                carGearbox = carDataArr[3];
-                carCategory = carDataArr[4];
-                carMileage = carDataArr[5];
-                carColor = carDataArr[6];
-            }
-            else if (carDataString.Contains("Мощ") && !carDataString.Contains("Евро") && !carDataString.Contains("Цвят"))
-            {
-                carEngineType = carDataArr[1];
-                carPower = carDataArr[2];
-                carGearbox = carDataArr[3];
-                carCategory = carDataArr[4];
-                carMileage = carDataArr[5];
-            }
-            else if (carDataString.Contains("Евро") && !carDataString.Contains("Мощ") && !carDataString.Contains("Цвят"))
-            {
-                carEngineType = carDataArr[1];
-                carEuroStandard = carDataArr[2];
-                carGearbox = carDataArr[3];
-                carCategory = carDataArr[4];
-                carMileage = carDataArr[5];
-            }
-            else if (carDataString.Contains("Цвят") && !carDataString.Contains("Мощ") && !carDataString.Contains("Евро"))
-            {
-                carEngineType = carDataArr[1];
-                carGearbox = carDataArr[2];
-                carCategory = carDataArr[3];
-                carMileage = carDataArr[4];
-                carColor = carDataArr[5];
+                carGearbox = carDataArr[7];
+                carPower = carDataArr[8];
+                carEuroStandard = carDataArr[9];
+                carColor = carDataArr[12];
             }
             else
             {
-                carEngineType = carDataArr[1];
-                carGearbox = carDataArr[2];
-                carCategory = carDataArr[3];
-                carMileage = carDataArr[4];
+                return null;
             }
 
-            if (carEngineType == "Дизелов")
+            //--------------------------------------------------------
+            if (carEngineType.Contains("Дизел"))
             {
                 carEngineType = "Diesel";
             }
-            else if (carEngineType == "Бензинов")
+            else if (carEngineType.Contains("Бензин"))
             {
                 carEngineType = "Gasoline";
             }
-            else if (carEngineType == "Електрически")
+            else if (carEngineType.Contains("Електричество"))
             {
                 carEngineType = "Electric";
             }
@@ -247,121 +217,91 @@
                 carEngineType = "Hybrid";
             }
 
-            if (carGearbox == "Ръчна")
+            if (carGearbox.Contains("Ръчни"))
             {
                 carGearbox = "Manual";
             }
-            else if (carGearbox == "Автоматична")
+            else if (carGearbox.Contains("Автоматични скорости"))
             {
                 carGearbox = "Automatic";
             }
-            else if (carGearbox == "Полуавтоматична")
-            {
-                carGearbox = "Semi_Automatic";
-            }
 
-            carEuroStandard = carEuroStandard.Replace("Евро ", "Euro_");
+            carEuroStandard = carEuroStandard.Trim().Replace(" ", "_");
 
-            carPower = carPower.Replace("к.с.", EmptyString);
+            carPower = carPower.Replace("к.с.", EmptyString).Trim();
+            carMileage = carMileage.Replace(" ", EmptyString);
             carMileage = carMileage.Replace("км", EmptyString);
 
-            var carNameQuery = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > div:nth-child(16) > table > tbody > tr > td:nth-child(1) > div:nth-child(1) > h1");
-            var priceQuery = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > div:nth-child(16) > table > tbody > tr > td:nth-child(2) > div > strong");
+            var priceQuery = document.QuerySelector("#main-content > div > div:nth-child(1) > div > div.offer-price > strong");
+            var carPrice = priceQuery.TextContent.Replace(",", EmptyString).Replace("лв.", EmptyString);
 
-            var locationQuery = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(2) > div:nth-child(1) > div > div > div:nth-child(5)");
+            var locationQuery = document.QuerySelector("#main-content > div > div:nth-child(2) > div > div.mdc-layout-grid__cell.mdc-layout-grid__cell--span-4-phone.mdc-layout-grid__cell--span-4-tablet.mdc-layout-grid__cell--span-2-desktop > div > div:nth-child(3) > table > tbody > tr > td");
             if (locationQuery == null)
             {
-                if (document.QuerySelectorAll("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(2) > div:nth-child(1) > div > div > div.adress").Length == 1)
+                locationQuery = document.QuerySelector("#main-content > div > div:nth-child(2) > div > div.mdc-layout-grid__cell.mdc-layout-grid__cell--span-4-phone.mdc-layout-grid__cell--span-4-tablet.mdc-layout-grid__cell--span-2-desktop > div > div:nth-child(3)");
+            }
+            else
+            {
+                if (locationQuery == null)
                 {
-                    locationQuery = document.QuerySelectorAll("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(2) > div:nth-child(1) > div > div > div.adress")[0];
-                }
-                else
-                {
-                    locationQuery = document.QuerySelectorAll("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(2) > div:nth-child(1) > div > div > div.adress")[1];
+                    locationQuery = document.QuerySelector("#main-content > div > div:nth-child(2) > div > div.mdc-layout-grid__cell.mdc-layout-grid__cell--span-4-phone.mdc-layout-grid__cell--span-4-tablet.mdc-layout-grid__cell--span-2-desktop > div > div:nth-child(4) > table > tbody > tr > td");
                 }
             }
 
-            var carLocation = locationQuery.TextContent;
+            var location = locationQuery.TextContent.Trim().Split(new string[] { " ", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var carLocation = EmptyString;
+            if (locationQuery.TextContent.Contains("Частно"))
+            {
+                carLocation = locationQuery.TextContent.Replace("Частно лице", EmptyString).Trim();
+            }
+            else
+            {
+                carLocation = location[location.Length - 1];
+            }
 
             var carDescription = string.Empty;
             var carExtras = string.Empty;
 
-            for (int i = 1; i < 50; i++)
-            {
-                var descriptionQuery = document.QuerySelector($"#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > div:nth-child({i})");
+            var carDescQuery = document.QuerySelector("#main-content > div > div:nth-child(2) > div > div.mdc-layout-grid__cell.mdc-layout-grid__cell--span-4-phone.mdc-layout-grid__cell--span-4-tablet.mdc-layout-grid__cell--span-2-desktop > div > div:nth-child(1)");
+            carDescription = carDescQuery.TextContent.Trim();
 
-                if (descriptionQuery != null)
+            if (carDescription.Contains("Особености и Екстри"))
+            {
+                carExtras = carDescription.Trim().Replace("Комфорт", EmptyString).Replace("Сигурност", EmptyString).Replace("Друго", EmptyString).Replace(":", EmptyString);
+                carDescription = EmptyString;
+            }
+            else
+            {
+                var extrasQuery = document.QuerySelector("#main-content > div > div:nth-child(2) > div > div.mdc-layout-grid__cell.mdc-layout-grid__cell--span-4-phone.mdc-layout-grid__cell--span-4-tablet.mdc-layout-grid__cell--span-2-desktop > div > div:nth-child(2) > div.description.text-copy");
+                if (extrasQuery == null)
                 {
-                    var extrasQuery = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > table:nth-child(21) > tbody > tr > td:nth-child(1)");
-                    var extrasQuery2 = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > table:nth-child(21) > tbody > tr > td:nth-child(2)");
-                    var extrasQuery3 = document.QuerySelector("#mainholder > table:nth-child(4) > tbody > tr > td:nth-child(1) > form:nth-child(3) > table:nth-child(21) > tbody > tr > td:nth-child(3)");
-
-                    if (extrasQuery != null && extrasQuery2 != null && extrasQuery3 != null && carExtras == EmptyString)
-                    {
-                        carExtras += extrasQuery.TextContent;
-                        carExtras += extrasQuery2.TextContent;
-                        carExtras += extrasQuery3.TextContent;
-                    }
-
-                    if (descriptionQuery.TextContent.Contains("Допълнителна информация:"))
-                    {
-                        carDescription = descriptionQuery.NextElementSibling.TextContent.Trim();
-                    }
+                    extrasQuery = document.QuerySelector("#main-content > div > div:nth-child(2) > div > div.mdc-layout-grid__cell.mdc-layout-grid__cell--span-4-phone.mdc-layout-grid__cell--span-4-tablet.mdc-layout-grid__cell--span-2-desktop > div > div:nth-child(3) > div.description.text-copy");
                 }
+
+                carExtras = extrasQuery.TextContent.Trim().Replace("Комфорт", EmptyString).Replace("Сигурност", EmptyString).Replace("Друго", EmptyString).Replace(":", EmptyString);
             }
 
-            var imageQuery = document.QuerySelector("#bigPictureCarousel");
-            var carImageUrl = imageQuery.OuterHtml.Split("\"")[1];
+            var carExtrasList = carExtras.Trim().Split(new string[] { "\n", "," }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
 
-            var dataArr = carNameQuery.TextContent.Split(" ", 3);
-            var carMake = dataArr[0];
-            var carModel = dataArr[1];
-            var carModification = string.Empty;
+            var imageQuery = document.QuerySelector("#main-content > div > div:nth-child(2) > div > div.mdc-layout-grid__cell.mdc-layout-grid__cell--span-4-phone.mdc-layout-grid__cell--span-4-tablet.mdc-layout-grid__cell--span-3-desktop > img:nth-child(2)");
+            var carImgArr = imageQuery.OuterHtml.Split("\"");
+            var carImageUrl = carImgArr[1];
 
-            if (dataArr.Length > 2)
-            {
-                carModification += dataArr[2];
-            }
+            var carCurrency = EmptyString;
 
-            var carPrice = string.Empty;
-            var carCurrency = string.Empty;
-
-            var priceData = priceQuery.TextContent.Split();
-
-            if (priceData[0] == "По")
+            if (carPrice.Contains("По"))
             {
                 carPrice = "По договаряне";
                 carCurrency = null;
             }
-            else if (priceData[0].Length == 2)
+            else
             {
-                var priceArr = priceQuery.TextContent.Split(" ");
-                carPrice = priceArr[0] + priceArr[1];
-                carCurrency = priceArr[2];
-            }
-            else if (priceData[0].Length == 1)
-            {
-                carPrice = priceData[0] + priceData[1];
-                carCurrency = priceData[2];
+                carCurrency = "лв.";
             }
 
-            var extrasArr = carExtras.Split("\n");
-            var carExtrasList = new List<string>();
-
-            for (int i = 0; i < extrasArr.Length; i++)
-            {
-                if (extrasArr[i].Contains("Безопасност") ||
-                    extrasArr[i].Contains("Екстериор") ||
-                    extrasArr[i].Contains("Комфорт") ||
-                    extrasArr[i].Contains("Защита") ||
-                    extrasArr[i].Contains("Интериор") ||
-                    extrasArr[i].Contains("Други"))
-                {
-                    continue;
-                }
-
-                carExtrasList.Add(extrasArr[i].Replace("\n", EmptyString).Replace("•", EmptyString));
-            }
+            var carMake = carDataString[0];
+            var carModel = carDataString[1];
+            var carModification = carDataString[2];
 
             var car = new CarDto
             {
@@ -458,7 +398,7 @@
                 var extra = this.extrasRepository
                     .AllAsNoTracking().FirstOrDefault(x => x.Name == extraName);
 
-                if (extra != null)
+                if (extra != null || string.IsNullOrWhiteSpace(extraName))
                 {
                     continue;
                 }
@@ -473,7 +413,7 @@
             }
         }
 
-        private async Task<List<CarsExtras>> GetExtrasAsync(ICollection<string> extras, int carId)
+        private async Task<List<CarsExtras>> GetOrCreateExtrasAsync(ICollection<string> extras, int carId)
         {
             var extrasToReturn = new List<CarsExtras>();
 
@@ -482,6 +422,17 @@
                 var extra = this.extrasRepository
                     .AllAsNoTracking().FirstOrDefault(x => x.Name == extraName);
 
+                if (extra == null && !string.IsNullOrWhiteSpace(extraName))
+                {
+                    extra = new Extra
+                    {
+                        Name = extraName,
+                    };
+
+                    await this.extrasRepository.AddAsync(extra);
+                    await this.extrasRepository.SaveChangesAsync();
+                }
+
                 var carExtra = new CarsExtras
                 {
                     ExtraId = extra.Id,
@@ -489,6 +440,9 @@
                 };
 
                 extrasToReturn.Add(carExtra);
+
+                await this.carsExtrasRepository.AddAsync(carExtra);
+                await this.carsExtrasRepository.SaveChangesAsync();
             }
 
             return extrasToReturn;
