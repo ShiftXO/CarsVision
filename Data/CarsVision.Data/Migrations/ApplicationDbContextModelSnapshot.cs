@@ -146,13 +146,13 @@ namespace CarsVision.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ColorId")
+                    b.Property<int?>("ColorId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
+                    b.Property<int?>("Currency")
                         .HasColumnType("int");
 
                     b.Property<string>("DealershipId")
@@ -164,13 +164,13 @@ namespace CarsVision.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EngineType")
+                    b.Property<int?>("EngineType")
                         .HasColumnType("int");
 
-                    b.Property<int>("EuroStandard")
+                    b.Property<int?>("EuroStandard")
                         .HasColumnType("int");
 
-                    b.Property<int>("Gearbox")
+                    b.Property<int?>("Gearbox")
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
@@ -188,7 +188,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("MakeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Mileage")
+                    b.Property<int?>("Mileage")
                         .HasColumnType("int");
 
                     b.Property<int>("ModelId")
@@ -200,16 +200,16 @@ namespace CarsVision.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Power")
+                    b.Property<int?>("Power")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Views")
+                    b.Property<int?>("Views")
                         .HasColumnType("int");
 
                     b.Property<string>("WatchlistId")
@@ -630,9 +630,7 @@ namespace CarsVision.Data.Migrations
                 {
                     b.HasOne("CarsVision.Data.Models.Color", "Color")
                         .WithMany()
-                        .HasForeignKey("ColorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ColorId");
 
                     b.HasOne("CarsVision.Data.Models.Dealership", null)
                         .WithMany("Cars")

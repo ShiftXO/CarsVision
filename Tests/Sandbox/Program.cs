@@ -11,6 +11,7 @@
     using CarsVision.Data.Models;
     using CarsVision.Data.Repositories;
     using CarsVision.Data.Seeding;
+    using CarsVision.Services;
     using CarsVision.Services.Data;
     using CarsVision.Services.Messaging;
 
@@ -50,12 +51,12 @@
 
         private static async Task<int> SandboxCode(SandboxOptions options, IServiceProvider serviceProvider)
         {
-            var sw = Stopwatch.StartNew();
-
             var settingsService = serviceProvider.GetService<ISettingsService>();
             Console.WriteLine($"Count of settings: {settingsService.GetCount()}");
 
-            Console.WriteLine(sw.Elapsed);
+            var carsScrapperService = serviceProvider.GetService<ICarsScrapperService>();
+            await carsScrapperService.PopulateDb(3540);
+
             return await Task.FromResult(0);
         }
 
@@ -82,6 +83,7 @@
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ICarsScrapperService, CarsScrapperService>();
         }
     }
 }

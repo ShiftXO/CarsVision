@@ -1,7 +1,9 @@
 ﻿namespace CarsVision.Services
 {
+    using System.Threading.Tasks;
+
     public interface ICarsScrapperService
     {
-        void PopulateDb(int pagesCount);
+        Task PopulateDb(int pagesCount);
     }
 }

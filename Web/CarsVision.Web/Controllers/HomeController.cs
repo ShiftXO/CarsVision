@@ -1,8 +1,8 @@
 ﻿namespace CarsVision.Web.Controllers
 {
     using System.Diagnostics;
-
-    using CarsVision.Services;
+	using System.Threading.Tasks;
+	using CarsVision.Services;
     using CarsVision.Services.Data;
     using CarsVision.Web.ViewModels;
     using CarsVision.Web.ViewModels.Cars;
@@ -42,8 +42,9 @@
             return this.Json(models);
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
+            await this.carsScrapperService.PopulateDb(1);
             return this.View();
         }
 

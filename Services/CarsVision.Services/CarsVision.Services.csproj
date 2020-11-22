@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\CarsVision.Data.Models\CarsVision.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Data\CarsVision.Data\CarsVision.Data.csproj" />
   </ItemGroup>
 
 </Project>

@@ -28,29 +28,29 @@
 
         public string Modification { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
 
-        public EngineType EngineType { get; set; }
+        public EngineType? EngineType { get; set; }
 
-        public Gearbox Gearbox { get; set; }
+        public Gearbox? Gearbox { get; set; }
 
-        public int Power { get; set; }
+        public int? Power { get; set; }
 
         public string Year { get; set; }
 
-        public int Mileage { get; set; }
+        public int? Mileage { get; set; }
 
-        public int Views { get; set; }
+        public int? Views { get; set; }
 
         public bool IsVIP { get; set; }
 
-        public int ColorId { get; set; }
+        public int? ColorId { get; set; }
 
         public virtual Color Color { get; set; }
 
-        public EuroStandard EuroStandard { get; set; }
+        public EuroStandard? EuroStandard { get; set; }
 
-        public Currency Currency { get; set; }
+        public Currency? Currency { get; set; }
 
         public string Location { get; set; }
 
