@@ -1,11 +1,13 @@
 ﻿namespace CarsVision.Web.ViewModels.Cars
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using CarsVision.Data.Models;
+    using Microsoft.AspNetCore.Http;
 
-    public class CarInputModel
+    public class CreateCarInputModel
     {
         [Required]
         public string Make { get; set; }
@@ -21,7 +23,7 @@
 
         public int Power { get; set; }
 
-        public string ImageUrl { get; set; }
+        public IEnumerable<IFormFile> Pictures { get; set; }
 
         public EuroStandard EuroStandard { get; set; }
 

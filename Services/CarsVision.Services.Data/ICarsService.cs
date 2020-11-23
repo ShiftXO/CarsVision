@@ -8,10 +8,14 @@
 
     public interface ICarsService
     {
-        Task AddCarAsync(CarInputModel carInput, string userId);
+        Task AddCarAsync(CreateCarInputModel carInput, string userId, string picturePath);
 
-        IEnumerable<T> GetAll<T>();
+        IEnumerable<T> GetAll<T>(int page, int itemsPerPage);
 
         IEnumerable<T> SearchCars<T>(CarsSearchInputModel car);
+
+        int GetCount();
+
+        T GetById<T>(int id);
     }
 }

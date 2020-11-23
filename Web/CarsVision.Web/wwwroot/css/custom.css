@@ -1,0 +1,25 @@
+﻿h5 > a:hover {
+    color: #0275d8;
+}
+i:hover {
+    color: #0275d8;
+    cursor: pointer;
+}
+strong {
+    color: black;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+img {
+    object-fit: cover;
+    width: 200;
+    height: 150;
+}
+
+    img:hover {
+        border: 1px solid #0275d8;
+        object-fit: cover;
+    }

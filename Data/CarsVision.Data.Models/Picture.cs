@@ -15,6 +15,8 @@
 
         public string Extension { get; set; }
 
+        public string RemotePictureUrl { get; set; }
+
         public int CarId { get; set; }
 
         public virtual Car Car { get; set; }

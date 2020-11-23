@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -13,6 +14,8 @@
 
     public class CarsService : ICarsService
     {
+        private readonly string[] allowedExtensions = new[] { "jpg", "png" };
+
         private readonly IDeletableEntityRepository<Car> carRepository;
         private readonly IDeletableEntityRepository<Make> makeRepository;
         private readonly IRepository<Color> colorRepository;
@@ -27,15 +30,15 @@
             this.colorRepository = colorRepository;
         }
 
-        public async Task AddCarAsync(CarInputModel carInput, string userId)
+        public async Task AddCarAsync(CreateCarInputModel input, string userId, string picturePath)
         {
             var make = this.makeRepository.All()
-                .Where(x => x.Name == carInput.Make)
+                .Where(x => x.Name == input.Make)
                 .Select(x => new { x.Id, x.Models })
                 .FirstOrDefault();
 
             var modelId = make.Models
-                .Where(x => x.Name == carInput.Model)
+                .Where(x => x.Name == input.Model)
                 .Select(x => x.Id)
                 .FirstOrDefault();
 
@@ -48,31 +51,67 @@
                 MakeId = make.Id,
                 ModelId = modelId,
                 UserId = userId,
-                ImageUrl = carInput.ImageUrl,
-                Modification = carInput.Modification,
-                Price = carInput.Price,
-                Power = carInput.Power,
-                Year = carInput.Year.ToString(),
-                Mileage = carInput.Mileage,
-                IsVIP = carInput.IsVIP,
-                Location = carInput.Location,
-                Description = carInput.Description,
-                EuroStandard = Enum.Parse<EuroStandard>(carInput.EuroStandard.ToString()),
-                Currency = Enum.Parse<Currency>(carInput.Currency.ToString()),
-                Gearbox = Enum.Parse<Gearbox>(carInput.Gearbox.ToString()),
-                EngineType = Enum.Parse<EngineType>(carInput.EngineType.ToString()),
+                Modification = input.Modification,
+                Price = input.Price,
+                Power = input.Power,
+                Year = input.Year.ToString(),
+                Mileage = input.Mileage,
+                IsVIP = input.IsVIP,
+                Location = input.Location,
+                Description = input.Description,
+                EuroStandard = Enum.Parse<EuroStandard>(input.EuroStandard.ToString()),
+                Currency = Enum.Parse<Currency>(input.Currency.ToString()),
+                Gearbox = Enum.Parse<Gearbox>(input.Gearbox.ToString()),
+                EngineType = Enum.Parse<EngineType>(input.EngineType.ToString()),
                 ColorId = colorId,
             };
+
+            // /wwwroot/images/cars/jhdsi-343g3h453-=g34g.jpg
+            Directory.CreateDirectory($"{picturePath}/cars/");
+            foreach (var picture in input.Pictures)
+            {
+                var extension = Path.GetExtension(picture.FileName).TrimStart('.');
+                if (!this.allowedExtensions.Any(x => extension.EndsWith(x)))
+                {
+                    throw new Exception($"Invalid picture extension {extension}");
+                }
+
+                var dbPicture = new Picture
+                {
+                    Extension = extension,
+                };
+                car.Pictures.Add(dbPicture);
+
+                var physicalPath = $"{picturePath}/cars/{dbPicture.Id}.{extension}";
+                using Stream fileStream = new FileStream(physicalPath, FileMode.Create);
+                await picture.CopyToAsync(fileStream);
+            }
 
             await this.carRepository.AddAsync(car);
             await this.carRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<T> GetAll<T>()
+        public IEnumerable<T> GetAll<T>(int page, int itemsPerPage = 12)
         {
-            IQueryable<Car> query = this.carRepository.All();
+            var cars = this.carRepository.AllAsNoTracking()
+                .OrderByDescending(x => x.Id)
+                .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
+                .To<T>().ToList();
+            return cars;
+        }
 
-            return query.To<T>().ToList();
+        public T GetById<T>(int id)
+        {
+            var car = this.carRepository.AllAsNoTracking()
+                .Where(x => x.Id == id)
+                .To<T>().FirstOrDefault();
+
+            return car;
+        }
+
+        public int GetCount()
+        {
+            return this.carRepository.AllAsNoTracking().Count();
         }
 
         public IEnumerable<T> SearchCars<T>(CarsSearchInputModel car)

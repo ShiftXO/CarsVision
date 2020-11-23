@@ -1,0 +1,45 @@
+﻿@model CarsVision.Web.ViewModels.Cars.CarsListViewModel
+@using CarsVision.Common
+@{
+    this.ViewData["Title"] = "All Cars, page " + Model.PageNumber;
+}
+
+
+<h1>list all cars here</h1>
+
+<div class="container col-6 justify-content-center">
+    @foreach (var car in Model.Cars)
+    {
+        <hr class="bg-primary" />
+        <div class="">
+            <div class="row">
+                <div>
+                    <span class="">
+                        @car.CreatedOn.ToString("M")
+                    </span>
+                    <!--<i class="far fa-heart float-right align-items-center"></i>-->
+                </div>
+                <!-- TODO: add to favorites and make heart full red-->
+            </div>
+            <div class="row">
+                <div class="" width="200" height="150">
+                    <a asp-action="Id" asp-route-id="@car.Id">
+                        <img src="@car.PictureUrl" width="200" height="150" class="mr-3 img-responsive d-block" alt="@car.MakeName @car.ModelName">
+                    </a>
+                </div>
+                <div class="col">
+                    <h5 class="">
+                        <a asp-action="Id" asp-route-id="@car.Id">
+                            @car.CarTitle
+                        </a>
+                        <i class="far fa-heart float-right"></i>
+                        <strong class="float-right mr-4">@Math.Truncate(@car.Price) лв.</strong>
+                    </h5>
+                    <span>@car.Description</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<hr />
+<partial name="_PagingPartial" model="@Model" />
