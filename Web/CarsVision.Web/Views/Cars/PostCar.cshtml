@@ -1,4 +1,4 @@
-﻿@model ICollection<CarsVision.Web.ViewModels.Home.MakesViewModel>
+﻿@model CarsVision.Web.ViewModels.Cars.CarPostViewModel
 @using CarsVision.Common
 @using System.Globalization
 @{
@@ -7,7 +7,7 @@
 
 <div class="form container ">
     <!-- Default form register -->
-    <form method="post" class="text-center border border-light p-5">
+    <form method="post" class="text-center border border-light p-5" enctype="multipart/form-data">
         <h5 class="card-header info-color white-text text-center py-4">
             <strong>Post Car</strong>
         </h5>
@@ -17,7 +17,7 @@
                 <label class="text-required font-weight-bold">Make</label>
                 <select id="makes" name="make" class="form-control" onchange="LoadModels()">
                     <option value="All">All</option>
-                    @foreach (var make in Model)
+                    @foreach (var make in Model.Makes)
                     {
                         <option value="@make.Name">@make.Name</option>
                     }
@@ -110,6 +110,10 @@
             <div class="col">
                 <label>Color</label>
                 <select name="color" class="form-control">
+                    @foreach (var color in Model.Colors)
+                    {
+                        <option value="@color.Name">@color.Name</option>
+                    }
                 </select>
             </div>
             <div class="col">
@@ -122,6 +126,16 @@
                     <option value="35">35 Days</option>
                     <option value="49">49 Days</option>
                 </select>
+            </div>
+        </div>
+        <div class="form-row mb-3 text-left">
+            <div class="col-6">
+                <label>Description</label>
+                <textarea name="description" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="col-2 float-right">
+                <label>Images</label>
+                <input class="form form-control-file" type="file" multiple name="pictures" />
             </div>
         </div>
         <button class="btn btn-info my-4 btn-block" type="submit">Post</button>

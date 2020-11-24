@@ -23,6 +23,7 @@
 
         public int Power { get; set; }
 
+        [Required]
         public IEnumerable<IFormFile> Pictures { get; set; }
 
         public EuroStandard EuroStandard { get; set; }
@@ -31,6 +32,7 @@
         [Range(1, 3)]
         public Gearbox Gearbox { get; set; }
 
+        [Required]
         [Range(1, 11)]
         public Category Category { get; set; }
 

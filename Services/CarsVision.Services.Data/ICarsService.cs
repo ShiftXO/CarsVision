@@ -17,5 +17,7 @@
         int GetCount();
 
         T GetById<T>(int id);
+
+        CarPostViewModel GetAllMakesAndColors();
     }
 }

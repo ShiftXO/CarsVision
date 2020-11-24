@@ -14,13 +14,11 @@
     {
         private readonly IMakesService makesService;
         private readonly ICarsService carsService;
-        private readonly ICarsScrapperService carsScrapperService;
 
-        public HomeController(IMakesService makesService, ICarsService carsService, ICarsScrapperService carsScrapperService)
+        public HomeController(IMakesService makesService, ICarsService carsService)
         {
             this.makesService = makesService;
             this.carsService = carsService;
-            this.carsScrapperService = carsScrapperService;
         }
 
         [HttpGet]
@@ -43,9 +41,8 @@
             return this.Json(models);
         }
 
-        public async Task<IActionResult> Privacy()
+        public IActionResult Privacy()
         {
-            // await this.carsScrapperService.PopulateDb(1);
             return this.View();
         }
 

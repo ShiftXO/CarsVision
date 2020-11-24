@@ -10,6 +10,7 @@
     using CarsVision.Data.Models;
     using CarsVision.Services.Mapping;
     using CarsVision.Web.ViewModels.Cars;
+    using CarsVision.Web.ViewModels.Colors;
     using CarsVision.Web.ViewModels.Home;
 
     public class CarsService : ICarsService
@@ -54,7 +55,7 @@
                 Modification = input.Modification,
                 Price = input.Price,
                 Power = input.Power,
-                Year = input.Year.ToString(),
+                Year = input.Month + " " + input.Year,
                 Mileage = input.Mileage,
                 IsVIP = input.IsVIP,
                 Location = input.Location,
@@ -98,6 +99,17 @@
                 .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
                 .To<T>().ToList();
             return cars;
+        }
+
+        public CarPostViewModel GetAllMakesAndColors()
+        {
+            var model = new CarPostViewModel
+            {
+                Makes = this.makeRepository.AllAsNoTracking().Select(x => new MakesViewModel { Name = x.Name }).ToList(),
+                Colors = this.colorRepository.AllAsNoTracking().Select(x => new ColorsViewModel { Name = x.Name }).ToList(),
+            };
+
+            return model;
         }
 
         public T GetById<T>(int id)

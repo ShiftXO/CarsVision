@@ -23,7 +23,7 @@
 
         public string Modification { get; set; }
 
-        public string CarTitle => string.Concat(this.MakeName + " " + this.ModelName + " " + this.Modification).Substring(0, 18) + "...";
+        public string CarTitle => string.Concat(this.MakeName + " " + this.ModelName + " " + this.Modification) + "...";
 
         public string Description { get; set; }
 
@@ -34,7 +34,7 @@
                     opt.MapFrom(x =>
                         x.ImageUrl != null ?
                         x.ImageUrl :
-                        "/images/recipes/" + x.Pictures.FirstOrDefault().Id + "." + x.Pictures.FirstOrDefault().Extension));
+                        "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension));
         }
     }
 }

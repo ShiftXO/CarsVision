@@ -1,0 +1,82 @@
+﻿@model CarsVision.Web.ViewModels.Cars.SingleCarViewModel
+@using CarsVision.Common
+@{
+    this.ViewData["Title"] = Model.MakeName + " " + Model.ModelName;
+}
+
+<div class="row">
+    <div class="col-6">
+        <!--Carousel Wrapper-->
+        <div id="carousel-example-1z" class="carousel slide carousel-fade" data-ride="carousel">
+            <!--Indicators-->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
+
+                <li data-target="#carousel-example-1z" data-slide-to="1"></li>
+            </ol>
+            <!--/.Indicators-->
+            <!--Slides-->
+            <div class="carousel-inner" role="listbox">
+                <!--First slide-->
+                <div class="carousel-item active">
+                    <img class="d-block w-100" src="@Model.PictureUrl" alt="First slide">
+                </div>
+            </div>
+            <!--/.Slides-->
+            <!--Controls-->
+            <a class="carousel-control-prev" href="#carousel-example-1z" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carousel-example-1z" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+            <!--/.Controls-->
+        </div>
+        <!--/.Carousel Wrapper-->
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col">
+                <h4 class="text-primary">
+                    @Model.MakeName @Model.ModelName @Model.Modification
+                    <strong class="float-right text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                </h4>
+                <ul>
+                    <li>Production year @Model.Year</li>
+                    <li>Engine type @Model.EngineType</li>
+                    <li>Power @Model.Power</li>
+                    <li>Eurostandard @Model.Euro</li>
+                    <li>Gearbox @Model.Gearbox</li>
+                    <li>Category @Model.Category</li>
+                    <li>Mileage @Model.Mileage</li>
+                    <li>Color @Model.ColorName</li>
+                </ul>
+            </div>
+            <div class="col">
+                <div class="col">
+                    <span>phone numer:0888888</span>
+                </div>
+                <div>dealer name</div>
+                <div>location @Model.Location</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <span>Created on: @Model.CreatedOn</span>
+            </div>
+            <div class="col float-right">This ad has been visited @Model.Views times.</div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div>Description</div>
+                <span>@Model.Description</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col">
+    <!-- extras -->
+</div>

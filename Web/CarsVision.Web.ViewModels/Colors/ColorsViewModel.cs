@@ -1,9 +1,9 @@
-﻿namespace CarsVision.Web.ViewModels.Home
+﻿namespace CarsVision.Web.ViewModels.Colors
 {
     using CarsVision.Data.Models;
     using CarsVision.Services.Mapping;
 
-    public class MakesViewModel : IMapFrom<Make>
+    public class ColorsViewModel : IMapFrom<Color>
     {
         public string Name { get; set; }
     }

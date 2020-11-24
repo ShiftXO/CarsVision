@@ -7,7 +7,8 @@
     using CarsVision.Services.Data;
     using CarsVision.Web.ViewModels.Cars;
     using CarsVision.Web.ViewModels.Home;
-    using Microsoft.AspNetCore.Hosting;
+	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -46,13 +47,15 @@
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult PostCar()
         {
-            var viewModel = this.makesService.GetAllNames<MakesViewModel>();
+            var viewModel = this.carsService.GetAllMakesAndColors();
             return this.View(viewModel);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> PostCar(CreateCarInputModel input)
         {
             if (!this.ModelState.IsValid)
@@ -73,6 +76,12 @@
             }
 
             return this.Redirect("/");
+        }
+
+        public IActionResult Id(int id)
+        {
+            var car = this.carsService.GetById<SingleCarViewModel>(id);
+            return this.View(car);
         }
     }
 }
