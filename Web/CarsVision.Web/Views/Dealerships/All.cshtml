@@ -1,0 +1,15 @@
+﻿@model CarsVision.Web.ViewModels.Dealerships.DealershipsListViewModel
+@using CarsVision.Common
+@{
+    this.ViewData["Title"] = "Dealerships, page " + Model.PageNumber;
+}
+
+@foreach (var dealer in Model.Dealerships)
+{
+    <div class="media">
+        <img src="@dealer.LogoPictureUrl" class="mr-3" alt="@dealer.Name">
+        <div class="media-body">
+            <h5 class="mt-0">@dealer.Name</h5>
+        </div>
+    </div>
+}

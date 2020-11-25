@@ -38,14 +38,14 @@
                 <select name="EngineType" class="form-control" asp-items="@Html.GetEnumSelectList<CarsVision.Data.Models.EngineType>()">
                 </select>
             </div>
-            <div class="col-sm-2">
+            <div class="col">
                 <label class="text-required font-weight-bold">Condition</label>
-                <div class="">
-                    <input type="radio" name="used" />
-                    <label>Used</label>
-                    <input type="radio" name="ForParts" />
-                    <label>For parts</label>
-                </div>
+                <select class="form-control">
+                    <option value="used">Used</option>
+                    <option value="new">New</option>
+                    <option value="forparts">For parts</option>
+                </select>
+
             </div>
         </div>
 
@@ -110,6 +110,7 @@
             <div class="col">
                 <label>Color</label>
                 <select name="color" class="form-control">
+                    <option></option>
                     @foreach (var color in Model.Colors)
                     {
                         <option value="@color.Name">@color.Name</option>

@@ -6,9 +6,8 @@
     using CarsVision.Data.Models;
     using CarsVision.Services.Data;
     using CarsVision.Web.ViewModels.Cars;
-    using CarsVision.Web.ViewModels.Home;
-	using Microsoft.AspNetCore.Authorization;
-	using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -60,7 +59,8 @@
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(input);
+                var viewModel = this.carsService.GetAllMakesAndColors();
+                return this.View(viewModel);
             }
 
             var user = await this.userManager.GetUserAsync(this.User);
