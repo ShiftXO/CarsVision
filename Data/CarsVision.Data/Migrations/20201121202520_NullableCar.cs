@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace CarsVision.Data.Migrations
+﻿namespace CarsVision.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class NullableCar : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
