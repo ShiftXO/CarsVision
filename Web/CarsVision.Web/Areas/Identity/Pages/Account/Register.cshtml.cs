@@ -9,8 +9,11 @@
     using System.Threading.Tasks;
 
     using CarsVision.Data.Models;
+    using CarsVision.Services.Data;
+    using CarsVision.Web.ViewModels.Dealerships;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.UI.Services;
@@ -26,17 +29,23 @@
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IDealershipsService _dealershipsService;
+        private readonly IWebHostEnvironment _environment;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IDealershipsService dealershipsService,
+            IWebHostEnvironment environment) // userservice?
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _dealershipsService = dealershipsService;
+            _environment = environment;
         }
 
         [BindProperty]
@@ -48,6 +57,8 @@
 
         public class InputModel
         {
+            public string Type { get; set; }
+
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -64,22 +75,24 @@
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Required]
+            //[Required]
             [Display(Name = "Dealership name")]
             public string DealershipName { get; set; }
 
-            [Required]
+            public string Description { get; set; }
+
+            //[Required]
             public string Location { get; set; }
 
-            [Required]
+            //[Required]
             [Display(Name = "Full address")]
             public string FullAddress { get; set; }
 
-            [Required]
+            //[Required]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
-            [Required]
+            //[Required]
             [Display(Name = "Logo picture")]
             public IFormFile LogoPicture { get; set; }
         }
@@ -96,8 +109,25 @@
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (Input.Type == "dealership")
+                {
+                    var dealershipInputModel = new CreateDealershipInputModel
+                    {
+                        DealershipName = Input.DealershipName,
+                        Email = Input.Email,
+                        Location = Input.Location,
+                        FullAddress = Input.FullAddress,
+                        PhoneNumber = Input.PhoneNumber,
+                        LogoPicture = Input.LogoPicture,
+                    };
+
+                    var dealershipUser = _userManager.FindByEmailAsync(dealershipInputModel.Email).Result;
+                    await _dealershipsService.CreateDealershipAsync(dealershipInputModel, dealershipUser, $"{_environment.WebRootPath}/images");
+                }
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

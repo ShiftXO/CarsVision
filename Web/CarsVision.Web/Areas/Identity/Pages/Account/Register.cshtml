@@ -7,16 +7,17 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-6">
-                <div class="row justify-content-center mb-3">
-                    <h3>Register</h3>
-                </div>
-                <div class="col">
-                    <h4>Create a new account.</h4>
-                    <i class="small" id="toggle" onclick="ToggleRegisterForm()">register as dealer?</i>
-                </div>
+            <div class="row justify-content-center mb-3">
+                <h3>Register</h3>
+            </div>
+            <div class="col">
+                <h4>Create a new account.</h4>
+                <i class="small" id="toggle" onclick="ToggleRegisterForm()">register as dealer?</i>
+            </div>
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post" id="normal" enctype="multipart/form-data">
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="Input.Type" value="normal" />
                 <div class="form-group">
                     <label asp-for="Input.Email"></label>
                     <input asp-for="Input.Email" class="form-control" />
@@ -42,12 +43,12 @@
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post" style="display:none" id="dealership" enctype="multipart/form-data">
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="Input.Type" value="dealership" />
                 <div class="form-group">
                     <label asp-for="Input.Email"></label>
                     <input asp-for="Input.Email" class="form-control" />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
-
                 <div class="form-group dealer">
                     <label asp-for="Input.DealershipName"></label>
                     <input asp-for="Input.DealershipName" class="form-control" />
@@ -68,7 +69,11 @@
                     <input asp-for="Input.PhoneNumber" class="form-control" />
                     <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                 </div>
-
+                <div class="form-group">
+                    <label asp-for="Input.Description"></label>
+                    <input asp-for="Input.Description" class="form-control" />
+                    <span asp-validation-for="Input.Description" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <label asp-for="Input.Password"></label>
                     <input asp-for="Input.Password" class="form-control" />
