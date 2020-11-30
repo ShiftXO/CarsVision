@@ -126,18 +126,62 @@
             return this.carRepository.AllAsNoTracking().Count();
         }
 
-        public IEnumerable<T> SearchCars<T>(CarsSearchInputModel car)
+        public IEnumerable<T> SearchCars<T>(CarsSearchInputModel car, int page, int itemsPerPage)
         {
-            IQueryable<Car> query = this.carRepository.AllAsNoTracking()
+            var cars = this.carRepository.AllAsNoTracking()
                 .Where(x =>
                 x.Make.Name == car.Make &&
                 x.Model.Name == car.Model &&
                 x.Price <= car.Price &&
                 x.EngineType == car.EngineType &&
-                x.Gearbox == car.Gearbox &&
-                x.Year.Contains(car.Year.ToString()));
+                x.Gearbox == car.Gearbox)
+                .OrderByDescending(x => x.Id)
+                .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
+                .To<T>().ToList();
 
-            return query.To<T>().ToList();
+            return cars;
+        }
+
+        public async Task Update(CarEditViewModel input)
+        {
+            var car = this.carRepository.All().FirstOrDefault(x => x.Id == input.Id);
+
+            var make = this.makeRepository.All()
+                .Where(x => x.Name == input.Make)
+                .Select(x => new { x.Id, x.Models })
+                .FirstOrDefault();
+
+            var modelId = make.Models
+                .Where(x => x.Name == input.Model)
+                .Select(x => x.Id)
+                .FirstOrDefault();
+
+            var colorId = this.colorRepository.All()
+                .Where(x => x.Name == input.Color)
+                .Select(x => x.Id)
+                .FirstOrDefault();
+
+            car.MakeId = make.Id;
+            car.ModelId = modelId;
+            car.ColorId = colorId;
+            car.Price = input.Price;
+            car.EngineType = input.EngineType;
+            car.Gearbox = input.Gearbox;
+            car.Year = input.Month + " " + input.Year;
+            car.Modification = input.Modification;
+            car.Currency = input.Currency;
+            car.Description = input.Description;
+            car.Power = input.Power;
+            car.Mileage = input.Mileage;
+
+            await this.carRepository.SaveChangesAsync();
+        }
+
+        public async Task Delete(int id)
+        {
+            var car = this.carRepository.All().FirstOrDefault(x => x.Id == id);
+            this.carRepository.Delete(car);
+            await this.carRepository.SaveChangesAsync();
         }
     }
 }

@@ -1,0 +1,155 @@
+﻿@model CarsVision.Web.ViewModels.Cars.CarEditViewModel
+@using CarsVision.Data.Models
+@using System.Globalization
+@{
+    this.ViewData["Title"] = "Post Car";
+}
+
+<div class="form container">
+    <form method="post" class="text-center border border-light p-5" enctype="multipart/form-data">
+        <h5 class="card-header info-color white-text text-center py-4">
+            <strong>Post Car</strong>
+        </h5>
+        <div class="form-row mb-3 text-left">
+            <div class="col-sm-2">
+                <label asp-for="Make" class="text-required font-weight-bold"></label>
+                <select asp-for="Make" id="makes" class="form-control" onchange="LoadModels()">
+                    <option></option>
+                    @foreach (var make in Model.Makes)
+                    {
+                        <option value="@make.Name">@make.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="Make" class="text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label asp-for="Model" class="text-required font-weight-bold"></label>
+                <select asp-for="Model" id="models" class="form-control">
+                    <option></option>
+                </select>
+                <span asp-validation-for="Model" class="text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label asp-for="Modification"></label>
+                <input asp-for="Modification" class="form form-control" />
+            </div>
+            <div class="col-sm-2">
+                <label asp-for="EngineType" class="text-required font-weight-bold"></label>
+                <select asp-for="EngineType" class="form-control" asp-items="@Html.GetEnumSelectList<EngineType>()">
+                </select>
+                <span asp-validation-for="EngineType" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="Condition" class="text-required font-weight-bold"></label>
+                <select asp-for="Condition" class="form-control">
+                    <option value="used">Used</option>
+                    <option value="new">New</option>
+                    <option value="forparts">For parts</option>
+                </select>
+                <span asp-validation-for="Condition" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row mb-3 text-left">
+            <div class="col-sm-2">
+                <label asp-for="Power"></label>
+                <input asp-for="Power" class="form-control mb-4">
+            </div>
+            <div class="col-sm-2">
+                <label asp-for="EuroStandard"></label>
+                <select asp-for="EuroStandard" class="form-control" asp-items="@Html.GetEnumSelectList<EuroStandard>()">
+                </select>
+            </div>
+            <div class="col">
+                <label asp-for="Gearbox" class="text-required font-weight-bold"></label>
+                <select asp-for="Gearbox" class="form-control" asp-items="@Html.GetEnumSelectList<Gearbox>()">
+                </select>
+                <span asp-validation-for="Gearbox" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="Category" class="text-required font-weight-bold"></label>
+                <select asp-for="Category" class="form-control" asp-items="@Html.GetEnumSelectList<Category>()">
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row mb-3 text-left">
+            <div class="col-sm-2">
+                <label asp-for="Price" class="text-required font-weight-bold"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label asp-for="Currency" class="text-required font-weight-bold"></label>
+                <select asp-for="Currency" class="form-control" asp-items="@Html.GetEnumSelectList<Currency>()">
+                </select>
+                <span asp-validation-for="Currency" class="text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label asp-for="Month" class="text-required font-weight-bold"></label>
+                <select asp-for="Month" class="form-control">
+                    <option></option>
+                    @foreach (var month in DateTimeFormatInfo.InvariantInfo.MonthNames)
+                    {
+                        <option value="@month">@month</option>
+                    }
+                </select>
+                <span asp-validation-for="Month" class="text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label asp-for="Year" class="text-required font-weight-bold"></label>
+                <select asp-for="Year" class="form-control">
+                    <option></option>
+                    @for (int year = DateTime.UtcNow.Year; year >= 1930; year--)
+                    {
+                        <option value="@year">@year</option>
+                    }
+                </select>
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="Mileage" class="text-required font-weight-bold"></label>
+                <input asp-for="Mileage" class="form-control" />
+                <span asp-validation-for="Mileage" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row mb-3 text-left">
+            <div class="col">
+                <label asp-for="Color"></label>
+                <select asp-for="Color" class="form-control">
+                    <option></option>
+                    @foreach (var color in Model.Colors)
+                    {
+                        <option value="@color.Name">@color.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col">
+                <label asp-for="Location" class="text-required font-weight-bold"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="Validity" class="text-required font-weight-bold"></label>
+                <select asp-for="Validity" class="form-control">
+                    <option value="35">35 Days</option>
+                    <option value="49">49 Days</option>
+                </select>
+                <span asp-validation-for="Validity" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row mb-3 text-left">
+            <div class="col-6">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="col-2 float-right">
+                <label asp-for="Pictures" class="text-required font-weight-bold"></label>
+                <input asp-for="Pictures" multiple class="form form-control-file" />
+                <span asp-validation-for="Pictures" class="text-danger"></span>
+            </div>
+        </div>
+        <button class="btn btn-info my-4 btn-block" type="submit">Post</button>
+    </form>
+</div>

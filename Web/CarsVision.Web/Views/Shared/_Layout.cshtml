@@ -38,6 +38,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Dealerships" asp-action="All">Dealers</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MyCars">My Cars</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -58,6 +61,7 @@
     <!--<script src="~/js/site.min.js" asp-append-version="true"></script>-->
     <script src="~/js/LoadModels.js" asp-append-version="true"></script>
     <script src="~/js/Register.js" asp-append-version="true"></script>
+    <script src="~/js/AddToWatchlist.js" asp-append-version="true"></script>
     @await this.RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

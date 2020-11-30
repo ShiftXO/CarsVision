@@ -12,12 +12,16 @@
 
         IEnumerable<T> GetAll<T>(int page, int itemsPerPage);
 
-        IEnumerable<T> SearchCars<T>(CarsSearchInputModel car);
+        IEnumerable<T> SearchCars<T>(CarsSearchInputModel car, int page, int itemsPerPage);
 
         int GetCount();
 
         T GetById<T>(int id);
 
         CarPostViewModel GetAllMakesAndColors();
+
+        Task Update(CarEditViewModel car);
+
+        Task Delete(int id);
     }
 }

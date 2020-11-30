@@ -1,0 +1,72 @@
+﻿@model CarsVision.Web.ViewModels.Cars.CarsListViewModel
+@using CarsVision.Common
+@{
+    this.ViewData["Title"] = "My Cars, page " + Model.PageNumber;
+}
+
+<div class="container col-6 justify-content-center">
+    @foreach (var car in Model.Cars)
+    {
+        <hr class="bg-primary" />
+        <div class="">
+            <div class="row">
+                <div>
+                    <span class="">
+                        @car.CreatedOn.ToString("M")
+                    </span>
+                    <!--<i class="far fa-heart float-right align-items-center"></i>-->
+                </div>
+                <!-- TODO: add to favorites and make heart full red-->
+            </div>
+            <div class="row">
+                <div class="" width="200" height="150">
+                    <a asp-action="Id" asp-route-id="@car.Id">
+                        <img src="@car.PictureUrl" width="200" height="150" class="mr-3 img-responsive d-block" alt="@car.MakeName @car.ModelName">
+                    </a>
+                </div>
+                <div class="col">
+                    <h5 class="">
+                        <a asp-action="Id" asp-route-id="@car.Id">
+                            @car.CarTitle
+                        </a>
+                        <strong class="float-right mr-4">@Math.Truncate(@car.Price) лв.</strong>
+                    </h5>
+                    <span>@car.Description</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<hr />
+@*<partial name="_PagingPartial" model="@Model" />*@
+
+<nav aria-label="...">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @if (!Model.HasPreviousPage) { <text>disabled</text> }">
+            <a class="page-link" asp-action="MyCars" asp-route-id="@Model.PreviousPageNumber">Previous</a>
+        </li>
+        @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
+        {
+            if (i > 0)
+            {
+                <li class="page-item"><a class="page-link" asp-action="MyCars" asp-route-id="@i">@i</a></li>
+            }
+        }
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">
+                @Model.PageNumber
+                <span class="sr-only">(current)</span>
+            </span>
+        </li>
+        @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 4; i++)
+        {
+            if (i <= Model.PagesCount)
+            {
+                <li class="page-item"><a class="page-link" asp-action="MyCars" asp-route-id="@i">@i</a></li>
+            }
+        }
+        <li class="page-item @if (!Model.HasNextPage) { <text>disabled</text> }">
+            <a class="page-link" asp-action="MyCars" asp-route-id="@Model.NextPageNumber">Next</a>
+        </li>
+    </ul>
+</nav>
