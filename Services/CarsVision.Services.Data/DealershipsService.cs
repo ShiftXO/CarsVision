@@ -10,6 +10,7 @@
     using CarsVision.Data.Common.Repositories;
     using CarsVision.Data.Models;
     using CarsVision.Services.Mapping;
+    using CarsVision.Web.ViewModels.Cars;
     using CarsVision.Web.ViewModels.Dealerships;
 
     public class DealershipsService : IDealershipsService
@@ -17,10 +18,17 @@
         private readonly string[] allowedExtensions = new[] { "jpg", "png" };
 
         private readonly IDeletableEntityRepository<Dealership> dealershipRepository;
+        private readonly IDeletableEntityRepository<Car> carsRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> usersRepository;
 
-        public DealershipsService(IDeletableEntityRepository<Dealership> dealershipRepository)
+        public DealershipsService(
+            IDeletableEntityRepository<Dealership> dealershipRepository,
+            IDeletableEntityRepository<Car> carsRepository,
+            IDeletableEntityRepository<ApplicationUser> usersRepository)
         {
             this.dealershipRepository = dealershipRepository;
+            this.carsRepository = carsRepository;
+            this.usersRepository = usersRepository;
         }
 
         public async Task<bool> CreateDealershipAsync(CreateDealershipInputModel input, ApplicationUser user, string picturePath)
@@ -29,10 +37,10 @@
             {
                 Name = input.DealershipName,
                 DealerSince = DateTime.UtcNow,
-                Location = input.Location,
+                Location = input.Location + " " + input.FullAddress,
                 PhoneNumber = input.PhoneNumber,
-                Stars = 0,
                 Description = input.Description,
+                Stars = 0,
                 User = user,
                 UserId = user.Id,
             };
@@ -75,6 +83,34 @@
             return dealerships;
         }
 
+        public IEnumerable<CarInListViewModel> GetAllDealershipCars(int page, string dealershipId, int itemsPerPage)
+        {
+            var dbCar = this.carsRepository.AllAsNoTracking().Where(x => x.UserId == dealershipId);
+            var dealershipsCars = dbCar
+                .Select(x => new CarInListViewModel
+                {
+                    Id = x.Id,
+                    MakeName = x.Make.Name,
+                    ModelName = x.Model.Name,
+                    Modification = x.Modification,
+                    Year = x.Year,
+                    Location = x.Location,
+                    Mileage = (int)x.Mileage,
+                    ColorName = x.Color.Name,
+                    UserPhoneNumber = x.User.PhoneNumber,
+                    CreatedOn = x.CreatedOn,
+                    Price = (decimal)x.Price,
+                    Currency = x.Currency.ToString(),
+                    Description = x.Description,
+                    PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
+                })
+                .OrderByDescending(x => x.CreatedOn)
+                .Skip((page - 1) * itemsPerPage)
+                .Take(itemsPerPage);
+
+            return dealershipsCars.ToList();
+        }
+
         public T GetById<T>(string id)
         {
             var dealership = this.dealershipRepository.AllAsNoTracking()
@@ -87,6 +123,42 @@
         public int GetCount()
         {
             return this.dealershipRepository.AllAsNoTracking().Count();
+        }
+
+        public DealershipInfoViewModel GetDealershipInfo(string id)
+        {
+            var dealership = this.dealershipRepository.AllAsNoTracking()
+                .Select(x => new
+                {
+                    x.Name,
+                    x.Location,
+                    x.CreatedOn,
+                    x.LogoPicture,
+                    x.PhoneNumber,
+                    x.UserId,
+                    LogoPictureId = x.LogoPicture.Id,
+                    LogoPictureExtension = x.LogoPicture.Extension,
+                })
+                .FirstOrDefault(x => x.UserId == id);
+
+            var res = new DealershipInfoViewModel
+            {
+                UserId = dealership.UserId,
+                Name = dealership.Name,
+                Location = dealership.Location,
+                CreatedOn = dealership.CreatedOn,
+                LogoPicture = "/images/dealerships/" + dealership.LogoPictureId + "." + dealership.LogoPictureExtension,
+                PhoneNumber = dealership.PhoneNumber,
+            };
+
+            return res;
+        }
+
+        public int GetDealershipsCarsCount(string id)
+        {
+            var user = this.usersRepository.AllAsNoTracking().Where(x => x.Id == id).Select(x => x.Cars).FirstOrDefault().Count;
+
+            return this.usersRepository.AllAsNoTracking().Where(x => x.Id == id).Select(x => x.Cars).FirstOrDefault().Count;
         }
     }
 }

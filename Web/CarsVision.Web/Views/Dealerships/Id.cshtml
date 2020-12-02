@@ -1,0 +1,97 @@
+﻿@model CarsVision.Web.ViewModels.Dealerships.SingleDealershipViewModel
+@using CarsVision.Common
+@{
+    this.ViewData["Title"] = Model.DealershipInfo.Name;
+}
+
+<div class="container col-6 justify-content-center">
+    <div class="row">
+        <div>
+            <img src="@Model.DealershipInfo.LogoPicture" class="mr-3 img-responsive d-block" alt="@Model.DealershipInfo.Name">
+        </div>
+        <div class="col">
+            <h5>
+                @Model.DealershipInfo.Name
+            </h5>
+            <div>
+                <span>@Model.DealershipInfo.Location</span>
+            </div>
+            <div>
+                <span>@Model.DealershipInfo.PhoneNumber</span>
+            </div>
+            <span>
+                Dealership in CarsVision since
+                @Model.DealershipInfo.CreatedOn.ToString("d")
+            </span>
+        </div>
+    </div>
+    @foreach (var car in Model.DealershipCars)
+    {
+        <hr class="bg-primary" />
+        <div class="">
+            <div class="row">
+                <i class="ml-3">
+                    @car.CreatedOn.ToString("M")
+                </i>
+                <!--<i class="far fa-heart float-right"></i>-->
+            </div>
+            <div class="row">
+                <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                    <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
+                </a>
+                <div class="col">
+                    <h5>
+                        <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                            @car.CarTitle
+                        </a>
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                            var id = car.Id;
+                            <form id="watchlistForm" method="post"></form>
+                            <a href="" onclick="AddToWatchlist(@id)">
+                                <i class="far fa-heart float-right"></i>
+                            </a>
+                        }
+                        <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
+                    </h5>
+                    <span>Prod. year - @car.Year... Mileage - @car.Mileage...</span>
+                    <span>Color - @car.ColorName... Location - @car.Location...</span>
+                    <span>Phone - @car.UserPhoneNumber</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<hr />
+@*<partial name="_PagingPartial" model="@Model" />*@
+
+<nav aria-label="...">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @if (!Model.HasPreviousPage) { <text>disabled</text> }">
+            <a class="page-link" href="@Model.DealershipInfo.UserId?page=@Model.PreviousPageNumber">Previous</a>
+        </li>
+        @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
+        {
+            if (i > 0)
+            {
+                <li class="page-item"><a class="page-link" href="@Model.DealershipInfo.UserId?page=@i">@i</a></li>
+            }
+        }
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">
+                @Model.PageNumber
+                <span class="sr-only">(current)</span>
+            </span>
+        </li>
+        @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 4; i++)
+        {
+            if (i <= Model.PagesCount)
+            {
+                <li class="page-item"><a class="page-link" href="@Model.DealershipInfo.UserId?page=@i">@i</a></li>
+            }
+        }
+        <li class="page-item @if (!Model.HasNextPage) { <text>disabled</text> }">
+            <a class="page-link" href="@Model.DealershipInfo.UserId?page=@Model.NextPageNumber">Next</a>
+        </li>
+    </ul>
+</nav>
