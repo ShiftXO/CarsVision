@@ -10,14 +10,14 @@
         public Watchlist()
         {
             this.Id = Guid.NewGuid().ToString();
-
-            this.Cars = new HashSet<Car>();
         }
 
         public string UserId { get; set; }
 
         public virtual ApplicationUser User { get; set; }
 
-        public ICollection<Car> Cars { get; set; }
+        public int CarId { get; set; }
+
+        public virtual Car Car { get; set; }
     }
 }

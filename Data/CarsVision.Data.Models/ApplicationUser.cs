@@ -18,6 +18,7 @@ namespace CarsVision.Data.Models
             this.Logins = new HashSet<IdentityUserLogin<string>>();
 
             this.Cars = new HashSet<Car>();
+            this.Watchlists = new HashSet<Watchlist>();
         }
 
         // Audit info
@@ -37,5 +38,7 @@ namespace CarsVision.Data.Models
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
         public virtual ICollection<Car> Cars { get; set; }
+
+        public virtual ICollection<Watchlist> Watchlists { get; set; }
     }
 }

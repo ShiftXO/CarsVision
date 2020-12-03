@@ -75,7 +75,7 @@
                 ItemsPerPage = ItemsPerPage,
                 PageNumber = id,
                 CarsCount = this.usersService.GetCount(user.Id),
-                Cars = this.usersService.GetAll<CarInListViewModel>(id, ItemsPerPage, user.Id),
+                Cars = await this.usersService.GetAll(id, ItemsPerPage, user.Id),
             };
             return this.View(viewModel);
         }
@@ -127,6 +127,15 @@
         {
             return this.View(
                 new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Add(int id)
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+            var result = await this.usersService.AddCarToWatchlist(id, user.Id);
+
+            return this.Ok(result);
         }
     }
 }
