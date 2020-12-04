@@ -10,6 +10,7 @@
         {
             this.Pictures = new List<Picture>();
             this.Extras = new List<CarsExtras>();
+            this.Watchlists = new HashSet<Watchlist>();
         }
 
         public string UserId { get; set; }
@@ -59,5 +60,7 @@
         public virtual ICollection<Picture> Pictures { get; set; }
 
         public virtual ICollection<CarsExtras> Extras { get; set; }
+
+        public virtual ICollection<Watchlist> Watchlists { get; set; }
     }
 }

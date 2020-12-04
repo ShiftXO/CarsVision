@@ -59,6 +59,7 @@
             return this.View("/Views/Cars/All.cshtml", viewModel);
         }
 
+        [HttpGet]
         [Authorize]
         public async Task<IActionResult> MyCars(int id = 1)
         {
@@ -80,6 +81,7 @@
             return this.View(viewModel);
         }
 
+        [Authorize]
         public IActionResult Id(int id)
         {
             var car = this.carsService.GetById<SingleCarViewModel>(id);
@@ -92,6 +94,18 @@
             return this.Json(models);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Add(int id)
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+            var result = await this.usersService.AddCarToWatchlist(id, user.Id);
+
+            return this.Ok(result);
+        }
+
+        [HttpGet]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             var viewModel = this.usersService.GetCarById(id);
@@ -99,18 +113,24 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit(CarEditViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                var vm = this.carsService.GetAllMakesAndColors();
-                return this.View(vm);
+                var makesAndColors = this.carsService.GetAllMakesAndColors();
+                var viewModel = input;
+                viewModel.Makes = makesAndColors.Makes;
+                viewModel.Colors = makesAndColors.Colors;
+                return this.View(viewModel);
             }
 
             await this.carsService.Update(input);
             return this.Redirect("/Home/MyCars");
         }
 
+        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             await this.carsService.Delete(id);
@@ -127,15 +147,6 @@
         {
             return this.View(
                 new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Add(int id)
-        {
-            var user = await this.userManager.GetUserAsync(this.User);
-            var result = await this.usersService.AddCarToWatchlist(id, user.Id);
-
-            return this.Ok(result);
         }
     }
 }
