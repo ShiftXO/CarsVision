@@ -2,13 +2,13 @@
 @using CarsVision.Data.Models
 @using System.Globalization
 @{
-    this.ViewData["Title"] = "Post Car";
+    this.ViewData["Title"] = "Edit Car";
 }
 
 <div class="form container">
-    <form method="post" class="text-center border border-light p-5" enctype="multipart/form-data">
+    <form method="post" id="editForm" class="text-center border border-light p-5">
         <h5 class="card-header info-color white-text text-center py-4">
-            <strong>Post Car</strong>
+            <strong>Edit Car</strong>
         </h5>
         <div class="form-row mb-3 text-left">
             <div class="col-sm-2">
@@ -144,12 +144,37 @@
                 <label asp-for="Description"></label>
                 <textarea asp-for="Description" class="form-control" rows="5"></textarea>
             </div>
-            <div class="col-2 float-right">
-                <label asp-for="Pictures" class="text-required font-weight-bold"></label>
-                <input asp-for="Pictures" multiple class="form form-control-file" />
-                <span asp-validation-for="Pictures" class="text-danger"></span>
+            <div class="col">
+                <div class="form-row mt-2">
+                    <label class="text-primary">All colored in <b>blue</b> are required!</label>
+                </div>
             </div>
         </div>
-        <button class="btn btn-info my-4 btn-block" type="submit">Post</button>
+        <input type="hidden" asp-for="Id" />
     </form>
+
+    <button class="btn btn-info my-4 btn-block" type="submit" data-toggle="modal" data-target="#modalEdit">Save</button>
+
+    <!-- Modal -->
+    <div class="modal" id="modalEdit" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm edit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Do you confirm this changes?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="editForm.submit()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
