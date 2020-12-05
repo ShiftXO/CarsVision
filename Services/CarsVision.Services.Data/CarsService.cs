@@ -12,6 +12,7 @@
     using CarsVision.Web.ViewModels.Cars;
     using CarsVision.Web.ViewModels.Colors;
     using CarsVision.Web.ViewModels.Home;
+    using Microsoft.EntityFrameworkCore;
 
     public class CarsService : ICarsService
     {
@@ -20,15 +21,24 @@
         private readonly IDeletableEntityRepository<Car> carRepository;
         private readonly IDeletableEntityRepository<Make> makeRepository;
         private readonly IRepository<Color> colorRepository;
+        private readonly IDeletableEntityRepository<Dealership> dealershipRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
+        private readonly IRepository<Watchlist> watchlistRepository;
 
         public CarsService(
             IDeletableEntityRepository<Car> carRepository,
             IDeletableEntityRepository<Make> makeRepository,
-            IRepository<Color> colorRepository)
+            IRepository<Color> colorRepository,
+            IDeletableEntityRepository<Dealership> dealershipRepository,
+            IDeletableEntityRepository<ApplicationUser> userRepository,
+            IRepository<Watchlist> watchlistRepository)
         {
             this.carRepository = carRepository;
             this.makeRepository = makeRepository;
             this.colorRepository = colorRepository;
+            this.dealershipRepository = dealershipRepository;
+            this.userRepository = userRepository;
+            this.watchlistRepository = watchlistRepository;
         }
 
         public async Task AddCarAsync(CreateCarInputModel input, string userId, string picturePath)
@@ -92,12 +102,31 @@
             await this.carRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<T> GetAll<T>(int page, int itemsPerPage = 12)
+        public async Task<IEnumerable<CarInListViewModel>> GetAll(int page, string userId, int itemsPerPage = 12)
         {
-            var cars = this.carRepository.AllAsNoTracking()
+            var cars = await this.carRepository.AllAsNoTracking()
                 .OrderByDescending(x => x.Id)
+                .Select(x => new CarInListViewModel
+                {
+                    Id = x.Id,
+                    IsInWatchlist = userId == string.Empty ? false : this.watchlistRepository.All().Any(d => d.UserId == userId && d.CarId == x.Id),
+                    MakeName = x.Make.Name,
+                    ModelName = x.Model.Name,
+                    Modification = x.Modification,
+                    Year = x.Year,
+                    Location = x.Location,
+                    Mileage = (int)x.Mileage,
+                    ColorName = x.Color.Name,
+                    UserPhoneNumber = x.User.PhoneNumber,
+                    Currency = x.Currency.ToString(),
+                    CreatedOn = x.CreatedOn,
+                    Price = (decimal)x.Price,
+                    Description = x.Description,
+                    PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
+                })
                 .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
-                .To<T>().ToList();
+                .ToListAsync();
+
             return cars;
         }
 
@@ -121,25 +150,99 @@
             return car;
         }
 
+        public SingleCarViewModel GetById(int id)
+        {
+            var dbCar = this.carRepository.AllAsNoTracking().Select(x => new { x.Id, x.UserId, x.Pictures, x.Make.Name, Model = x.Model.Name }).FirstOrDefault(x => x.Id == id);
+            var dealership = this.dealershipRepository.AllAsNoTracking().Where(x => x.UserId == dbCar.UserId).FirstOrDefault();
+            var user = this.userRepository.AllAsNoTracking().Where(x => x.Id == dbCar.UserId).FirstOrDefault();
+
+            var pictures = dbCar.Pictures.Select(x => x.Id + "." + x.Extension).ToList();
+
+            var car = this.carRepository.AllAsNoTracking()
+                .Where(x => x.Id == id)
+                .Select(x => new SingleCarViewModel
+                {
+                    Id = x.Id,
+                    MakeName = dbCar.Name,
+                    ModelName = dbCar.Model,
+                    Modification = x.Modification,
+                    ColorName = x.Color.Name,
+                    CreatedOn = x.CreatedOn,
+                    Location = x.Location,
+                    Description = x.Description,
+                    Year = x.Year,
+                    Currency = (Currency)x.Currency,
+                    EngineType = (EngineType)x.EngineType,
+                    EuroStandard = (EuroStandard)x.EuroStandard,
+                    Gearbox = (Gearbox)x.Gearbox,
+                    Mileage = x.Mileage != null ? (int)x.Mileage : 0,
+                    Power = x.Power != null ? (int)x.Power : 0,
+                    Price = x.Price != null ? (decimal)x.Price : 0,
+                    Views = x.Views != null ? (int)x.Views : 0,
+                    PictureUrls = pictures,
+                })
+                .FirstOrDefault();
+
+            if (dealership == null)
+            {
+                car.PhoneNumber = user.PhoneNumber;
+                car.UserId = user.Id;
+                car.IsDealership = false;
+            }
+            else
+            {
+                car.PhoneNumber = dealership.PhoneNumber;
+                car.DealershipName = dealership.Name;
+                car.UserId = dealership.UserId;
+                car.IsDealership = true;
+            }
+
+            return car;
+        }
+
         public int GetCount()
         {
             return this.carRepository.AllAsNoTracking().Count();
         }
 
-        public IEnumerable<T> SearchCars<T>(CarsSearchInputModel car, int page, int itemsPerPage)
+        public (IEnumerable<T> Cars, int Count) SearchCars<T>(CarsSearchInputModel car, int page, int itemsPerPage)
         {
-            var cars = this.carRepository.AllAsNoTracking()
-                .Where(x =>
-                x.Make.Name == car.Make &&
-                x.Model.Name == car.Model &&
-                x.Price <= car.Price &&
-                x.EngineType == car.EngineType &&
-                x.Gearbox == car.Gearbox)
-                .OrderByDescending(x => x.Id)
-                .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
-                .To<T>().ToList();
+            var query = this.carRepository.AllAsNoTracking().AsQueryable();
 
-            return cars;
+            if (!string.IsNullOrWhiteSpace(car.Make))
+            {
+                query = query.Where(x => x.Make.Name == car.Make);
+            }
+
+            if (!string.IsNullOrWhiteSpace(car.Model))
+            {
+                query = query.Where(x => x.Model.Name == car.Model);
+            }
+
+            if (car.EngineType != EngineType.Unknown)
+            {
+                query = query.Where(x => x.EngineType == car.EngineType);
+            }
+
+            if (car.Gearbox != Gearbox.None)
+            {
+                query = query.Where(x => x.Gearbox == car.Gearbox);
+            }
+
+            if (car.Price > 0)
+            {
+                query = query.Where(x => x.Price <= car.Price);
+            }
+
+            if (car.Year > 0)
+            {
+                query = query.Where(x => x.Year.Contains(car.Year.ToString()));
+            }
+
+            query.OrderByDescending(x => x.CreatedOn)
+            .Skip((page - 1) * itemsPerPage);
+
+            return (query.To<T>().Take(itemsPerPage).ToList(), query.To<T>().ToList().Count);
         }
 
         public async Task Update(CarEditViewModel input)
