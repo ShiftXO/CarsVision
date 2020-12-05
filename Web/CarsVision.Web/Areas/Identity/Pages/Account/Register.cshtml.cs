@@ -126,6 +126,7 @@
 
                     var dealershipUser = _userManager.FindByEmailAsync(dealershipInputModel.Email).Result;
                     await _dealershipsService.CreateDealershipAsync(dealershipInputModel, dealershipUser, $"{_environment.WebRootPath}/images");
+                    await _userManager.AddToRoleAsync(dealershipUser, "Dealership");
                 }
 
                 if (result.Succeeded)
