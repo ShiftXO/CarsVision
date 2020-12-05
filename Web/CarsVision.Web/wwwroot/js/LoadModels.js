@@ -3,14 +3,14 @@
     let modelsSelect = document.getElementById("models");
 
     if (makeName == "All") {
-        modelsSelect.innerHTML = "<option value\"All\"></option>";
+        modelsSelect.innerHTML = "<option value\"All\" selected>All</option>";
         return;
     }
 
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            modelsSelect.innerHTML = "<option value\"All\"></option>";
+            //modelsSelect.innerHTML = "<option value\"All\"></option>";
             var models = JSON.parse(this.responseText);
             for (let i = 0; i < models.length; i++) {
                 const element = models[i];
