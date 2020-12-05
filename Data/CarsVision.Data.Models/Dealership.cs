@@ -12,6 +12,7 @@
             this.Id = Guid.NewGuid().ToString();
 
             this.Cars = new HashSet<Car>();
+            this.Votes = new HashSet<Vote>();
         }
 
         public string UserId { get; set; }
@@ -35,5 +36,7 @@
         public DateTime? DealerSince { get; set; }
 
         public virtual ICollection<Car> Cars { get; set; }
+
+        public virtual ICollection<Vote> Votes { get; set; }
     }
 }

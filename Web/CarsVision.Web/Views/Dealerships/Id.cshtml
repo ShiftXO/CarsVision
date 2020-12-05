@@ -24,22 +24,22 @@
                 @Model.DealershipInfo.CreatedOn.ToString("d")
             </span>
         </div>
-        @*<div>
+        <div>
+            @*<i class="fas fa-star text-secondary" onclick="rate(1, '@id')"></i>
+        <i class="fas fa-star text-secondary" onclick="rate(2, '@id')"></i>
+        <i class="fas fa-star text-secondary" onclick="rate(3, '@id')"></i>
+        <i class="fas fa-star text-secondary" onclick="rate(4, '@id')"></i>
+        <i class="fas fa-star text-secondary" onclick="rate(5, '@id')"></i>
+        <span id="averageVoteValue">@Model.DealershipInfo.AverageVote.ToString("0.0")</span><span> / 5</span>*@
             <ul class="item-rating">
-                @for (int i = 1; i <= 5; i++)
-                {
-                    if (i <= Math.Round(@Model.AverageVote, MidpointRounding.ToEven))
-                    {
-                        <li class="star star-fill" data-vote="@i"><i class="fas fa-star"></i></li>
-                    }
-                    else
-                    {
-                        <li class="star star-empty" data-vote="@i"><i class="fas fa-star"></i></li>
-                    }
-                }
-                <li><span id="averageVoteValue">@Model.AverageVote.ToString("0.0")</span><span> / 5</span> </li>
+                <li class="star-fill" data-vote="1"><i class="fas fa-star"></i></li>
+                <li class="star-fill" data-vote="2"><i class="fas fa-star"></i></li>
+                <li class="star-fill" data-vote="3"><i class="fas fa-star"></i></li>
+                <li class="star-fill" data-vote="4"><i class="fas fa-star"></i></li>
+                <li class="star-fill" data-vote="5"><i class="fas fa-star"></i></li>
+                <li><span id="averageVoteValue">@Model.DealershipInfo.AverageVote.ToString("0.0")</span><span> / 5</span> </li>
             </ul>
-        </div>*@
+        </div>
     </div>
     @foreach (var car in Model.DealershipCars)
     {
@@ -84,7 +84,34 @@
         </div>
     }
 </div>
+<form method="post" id="antiForgeryForm"></form>
 <hr />
+
+@section scripts{ 
+    <script>
+        $("li[data-vote]").each(function (el) {
+            $(this).click(function () {
+                var value = $(this).attr("data-vote");
+                var dealershipId = "@Model.DealershipInfo.Id";
+                var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
+                var data = { dealershipId: dealershipId, value: value };
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Votes",
+                    data: JSON.stringify(data),
+                    headers: {
+                        'X-CSRF-TOKEN': antiForgeryToken
+                    },
+                    success: function (data) {
+                        $('#averageVoteValue').html(data.averageVote.toFixed(1));
+                        console.log(data);
+                    },
+                    contentType: 'application/json',
+                });
+            })
+        });
+    </script>
+}
 
 <nav aria-label="...">
     <ul class="pagination justify-content-center">

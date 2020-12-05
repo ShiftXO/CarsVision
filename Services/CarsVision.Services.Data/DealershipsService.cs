@@ -136,6 +136,7 @@
             var dealership = this.dealershipRepository.AllAsNoTracking()
                 .Select(x => new
                 {
+                    x.Id,
                     x.Name,
                     x.Location,
                     x.CreatedOn,
@@ -144,17 +145,20 @@
                     x.UserId,
                     LogoPictureId = x.LogoPicture.Id,
                     LogoPictureExtension = x.LogoPicture.Extension,
+                    AverageVote = x.Votes.Average(x => x.Value),
                 })
                 .FirstOrDefault(x => x.UserId == id);
 
             var res = new DealershipInfoViewModel
             {
+                Id = dealership.Id,
                 UserId = dealership.UserId,
                 Name = dealership.Name,
                 Location = dealership.Location,
                 CreatedOn = dealership.CreatedOn,
                 LogoPicture = "/images/dealerships/" + dealership.LogoPictureId + "." + dealership.LogoPictureExtension,
                 PhoneNumber = dealership.PhoneNumber,
+                AverageVote = dealership.AverageVote,
             };
 
             return res;

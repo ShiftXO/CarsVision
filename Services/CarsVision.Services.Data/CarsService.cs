@@ -214,7 +214,7 @@
                 query = query.Where(x => x.Make.Name == car.Make);
             }
 
-            if (!string.IsNullOrWhiteSpace(car.Model))
+            if (!string.IsNullOrWhiteSpace(car.Model) && car.Model != "All")
             {
                 query = query.Where(x => x.Model.Name == car.Model);
             }
