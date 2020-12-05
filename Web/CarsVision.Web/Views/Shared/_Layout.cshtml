@@ -10,7 +10,7 @@
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" asp-append-version="true"/>
-    <link href="~/css/custom.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/custom.css" rel="stylesheet"asp-append-version="true" />
     <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
 </head>
@@ -40,6 +40,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MyCars">My Cars</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Watchlists" asp-action="All">Notebook</a>
                         </li>
                     </ul>
                 </div>

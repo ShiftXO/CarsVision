@@ -1,10 +1,7 @@
 ﻿h5 > a:hover {
     color: #0275d8;
 }
-i:hover {
-    color: #0275d8;
-    cursor: pointer;
-}
+
 strong {
     color: black;
 }
@@ -13,16 +10,31 @@ a:hover {
     text-decoration: none;
 }
 
-img {
-    object-fit: cover;
-    width: 200;
-    height: 150;
+.carItem {
+    width: 200px;
+    height: 150px;
 }
 
-    img:hover {
+    .carItem:hover {
         border: 1px solid #0275d8;
-        object-fit: cover;
     }
-textarea{
-    resize:none;
+
+textarea {
+    resize: none;
+}
+
+.zoom {
+    transition: transform .2s;
+    cursor: pointer;
+}
+    .zoom:hover {
+        transform: scale(1.5);
+    }
+
+.carousel {
+    width: 1920px;
+    max-width: 80%;
+}
+.grad {
+    background-image: linear-gradient(180deg, white, #e1ebfc);
 }
