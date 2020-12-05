@@ -3,13 +3,36 @@
 @{
     this.ViewData["Title"] = "Dealerships, page " + Model.PageNumber;
 }
-
-@foreach (var dealer in Model.Dealerships)
-{
-    <div class="media">
-        <img src="@dealer.LogoPictureUrl" class="mr-3" alt="@dealer.Name">
-        <div class="media-body">
-            <h5 class="mt-0">@dealer.Name</h5>
+<div class="container col-6 justify-content-center">
+    @foreach (var dealer in Model.Dealerships)
+    {
+        <hr class="bg-primary" />
+        <div class="justify-content-center">
+            <div class="row">
+                <div>
+                    <a asp-action="Id" asp-route-id="@dealer.UserId">
+                        <img src="@dealer.LogoPictureUrl" class="mr-3 img-responsive d-block" alt="@dealer.Name">
+                    </a>
+                </div>
+                <div class="col">
+                    <h5>
+                        <a asp-action="Id" asp-route-id="@dealer.UserId">@dealer.Name</a>
+                    </h5>
+                    <div>
+                        <span>@dealer.Location</span>
+                    </div>
+                    <div>
+                        <span>@dealer.PhoneNumber</span>
+                    </div>
+                    <span>
+                        Dealership in CarsVision since
+                        @dealer.DealerSince.ToString("d")
+                    </span>
+                </div>
+            </div>
         </div>
-    </div>
-}
+    }
+</div>
+
+<hr />
+<partial name="_PagingPartial" model="@Model" />

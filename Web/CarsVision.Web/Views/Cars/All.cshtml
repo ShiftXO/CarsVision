@@ -8,31 +8,41 @@
     @foreach (var car in Model.Cars)
     {
         <hr class="bg-primary" />
-        <div class="">
+        <div class="grad pb-2">
             <div class="row">
-                <div>
-                    <span class="">
-                        @car.CreatedOn.ToString("M")
-                    </span>
-                    <!--<i class="far fa-heart float-right align-items-center"></i>-->
-                </div>
-                <!-- TODO: add to favorites and make heart full red-->
+                <i class="ml-3">
+                    @car.CreatedOn.ToString("M")
+                </i>
             </div>
             <div class="row">
-                <div class="" width="200" height="150">
-                    <a asp-action="Id" asp-route-id="@car.Id">
-                        <img src="@car.PictureUrl" width="200" height="150" class="mr-3 img-responsive d-block" alt="@car.MakeName @car.ModelName">
-                    </a>
-                </div>
+                <a class="ml-4" asp-action="Id" asp-route-id="@car.Id">
+                    <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
+                </a>
                 <div class="col">
-                    <h5 class="">
+                    <h5>
                         <a asp-action="Id" asp-route-id="@car.Id">
                             @car.CarTitle
                         </a>
-                        <i class="far fa-heart float-right"></i>
-                        <strong class="float-right mr-4">@Math.Truncate(@car.Price) лв.</strong>
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                            @if (!car.IsInWatchlist)
+                            {
+                                <a>
+                                    <i class="far fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a>
+                                    <i class="fas fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                                </a>
+                            }
+                        }
+                        <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
                     </h5>
-                    <span>@car.Description</span>
+                    <span>Prod. year - @car.Year... Mileage - @car.Mileage...</span>
+                    <span>Color - @car.ColorName... Location - @car.Location...</span>
+                    <span>Phone - @car.UserPhoneNumber</span>
                 </div>
             </div>
         </div>

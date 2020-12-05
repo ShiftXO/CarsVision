@@ -4,95 +4,182 @@
     this.ViewData["Title"] = Model.MakeName + " " + Model.ModelName;
 }
 
-<div class="row">
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img class="d-block w-100" src="@Model.PictureUrl" alt="First slide">
+<div class="container">
+    <div class="col">
+        <div class="row">
+            <div class="col-md-3">
+                <h4 class="text-primary">
+                    @Model.MakeName @Model.ModelName @Model.Modification
+                </h4>
             </div>
-            <div class="carousel-item">
-                <img class="d-block w-100" src="@Model.PictureUrl" alt="Second slide">
-            </div>
-            <div class="carousel-item">
-                <img class="d-block w-100" src="@Model.PictureUrl" alt="Third slide">
+            <div class="col">
+                <strong class="float-left text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                @if (this.User.Identity.IsAuthenticated)
+                {
+                    <i class="far fa-heart float-left zoom" data-i-holder="@Model.Id" onclick="AddToWatchlist(@Model.Id)"></i>
+                }
             </div>
         </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+        <div id="carouselExampleIndicators" class="carousel slide row-cols-sm-1" data-interval="false" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0"></li>
+                @for (int i = 1; i < Model.PictureUrls.Count; i++)
+                {
+                    <li data-target="#carouselExampleIndicators" data-slide-to="@i"></li>
+                }
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="d-block w-100" src="/images/cars/@Model.PictureUrls.FirstOrDefault()" alt="First slide">
+                </div>
+                @for (int i = 1; i < Model.PictureUrls.Count; i++)
+                {
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="/images/cars/@Model.PictureUrls.ToList()[i]" alt="First slide">
+                    </div>
+                }
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
     </div>
-    <div class="col-6">
+    <div class="col">
         <div class="row">
             <div class="col">
                 <h4 class="text-primary">
-                    @Model.MakeName @Model.ModelName @Model.Modification
-                    <strong class="float-right text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                    <span>@Model.MakeName @Model.ModelName @Model.Modification</span>
+                    <span>@Math.Truncate(Model.Price) @Model.Currency</span>
                 </h4>
-                <ul>
-                    <li>Production year @Model.Year</li>
-                    <li>Engine type @Model.EngineType</li>
-                    <li>Power @Model.Power</li>
-                    <li>Eurostandard @Model.Euro</li>
-                    <li>Gearbox @Model.Gearbox</li>
-                    <li>Category @Model.Category</li>
-                    <li>Mileage @Model.Mileage</li>
-                    <li>Color @Model.ColorName</li>
+            </div>
+            @*<div class="col-sm-1">
+                    <strong class="float-right text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                </div>*@
+        </div>
+        <div class="grid">
+            <div class="row">
+                <ul class="fa-ul">
+                    <li>
+                        <span class="fa-li">
+                            <i class="fas fa-chevron-right text-primary"></i>
+                        </span>Production year @Model.Year
+                    </li>
+                    <li>
+                        <span class="fa-li">
+                            <i class="fas fa-chevron-right text-primary"></i>
+                        </span>Engine type @Model.EngineType
+                    </li>
+                    @if (Model.Power != 0)
+                    {
+                        <li>
+                            <span class="fa-li">
+                                <i class="fas fa-chevron-right text-primary"></i>
+                            </span>Power @Model.Power
+                        </li>
+                    }
+                    @if (Model.Euro != "Unknown")
+                    {
+                        <li>
+                            <span class="fa-li">
+                                <i class="fas fa-chevron-right text-primary"></i>
+                            </span>Eurostandard @Model.Euro
+                        </li>
+                    }
+                    <li>
+                        <span class="fa-li">
+                            <i class="fas fa-chevron-right text-primary"></i>
+                        </span>Gearbox @Model.Gearbox
+                    </li>
+                    <li>
+                        <span class="fa-li">
+                            <i class="fas fa-chevron-right text-primary"></i>
+                        </span>Mileage @Model.Mileage
+                    </li>
+                    @if (Model.ColorName != null)
+                    {
+                        <li>
+                            <span class="fa-li">
+                                <i class="fas fa-chevron-right text-primary"></i>
+                            </span>Color @Model.ColorName
+                        </li>
+                    }
                 </ul>
-            </div>
-            <div class="border border-primary col-4 align-content-center">
-                <div class="col">
-                    <i class="fa fa-phone text-primary"></i>
-                    <span>088 321 321 444</span>
-                </div>
-                @if (false)
-                {
-                    <div>dealer name</div>
-                }
-                else
-                {
+                <div class="col-md-4 col-sm ml-3 mb-3 pb-3 border border-primary align-content-center">
                     <div class="col">
-                        <i class="fa fa-user text-primary"></i>
-                        <span>Private person</span>
+                        <div class="col">
+                            <i class="fa fa-phone text-primary"></i>
+                            <span>@Model.PhoneNumber</span>
+                        </div>
+                        @if (Model.IsDealership)
+                        {
+                            <div class="col">
+                                <i class="fas fa-user-tie text-primary"></i>
+                                <a target="_blank" asp-controller="Dealerships" asp-action="Id" asp-route-id="@Model.UserId">
+                                    @Model.DealershipName
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <i class="fa fa-user text-primary"></i>
+                                <span>Private person</span>
+                            </div>
+                        }
+                        <div class="col">
+                            <i class="fa fa-map-marker text-primary"></i>
+                            <span>@Model.Location</span>
+                        </div>
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                            @if (this.User.Claims.FirstOrDefault().Value == Model.UserId)
+                            {
+                                <div class="row mr-2 justify-content-center align-bottom">
+                                    <a class="form-control col-3 btn btn-primary mr-3" asp-controller="Home" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                                    <form method="post" asp-controller="Home" asp-action="Delete" id="deleteForm" asp-route-id="@Model.Id">
+                                    </form>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                </div>
+                            }
+                        }
                     </div>
-                }
-                <div class="col">
-                    <i class="fa fa-map-marker text-primary"></i>
-                    <span>@Model.Location</span>
                 </div>
-                @if (this.User.Claims.FirstOrDefault().Value == Model.UserId)
-                {
-                    <div class="row mr-2 justify-content-center align-bottom">
-                        <a class="form-control col-3 btn btn-primary mr-3" asp-controller="Home" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-                        <a class="form-control col-3 btn btn-danger" asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
-                    </div>
-                }
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <span>Created on: @Model.CreatedOn</span>
-            </div>
-            <div class="col float-right">This ad has been visited @Model.Views times.</div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div>Description</div>
-                <span>@Model.Description</span>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <span>Created on: @Model.CreatedOn</span>
+        </div>
+        <div class="col float-right">This ad has been visited @Model.Views times.</div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div>Description</div>
+            <span>@Model.Description</span>
+        </div>
+    </div>
+
+    <div class="col">
+        <!-- extras -->
+    </div>
 </div>
 
-<div class="col">
-    <!-- extras -->
+<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Do you want to delete "@Model.MakeName @Model.ModelName"?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="deleteForm.submit()">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
 </div>

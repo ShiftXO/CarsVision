@@ -11,19 +11,33 @@
     {
         public int Id { get; set; }
 
+        public bool IsInWatchlist { get; set; }
+
+        public string UserPhoneNumber { get; set; }
+
         public string PictureUrl { get; set; }
 
         public string MakeName { get; set; }
 
         public string ModelName { get; set; }
 
+        public string Year { get; set; }
+
+        public int Mileage { get; set; }
+
         public DateTime CreatedOn { get; set; }
 
         public decimal Price { get; set; }
 
+        public string Currency { get; set; }
+
+        public string ColorName { get; set; }
+
+        public string Location { get; set; }
+
         public string Modification { get; set; }
 
-        public string CarTitle => string.Concat(this.MakeName + " " + this.ModelName + " " + this.Modification) + "...";
+        public string CarTitle => string.Concat(this.MakeName, " ", this.ModelName, " ", this.Modification, "...");
 
         public string Description { get; set; }
 
@@ -34,7 +48,11 @@
                     opt.MapFrom(x =>
                         x.ImageUrl != null ?
                         x.ImageUrl :
-                        "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension));
+                        "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension))
+                .ForMember(x => x.Currency, opt =>
+                  opt.MapFrom(x => x.Currency))
+                .ForMember(x => x.UserPhoneNumber, opt =>
+                  opt.MapFrom(x => x.User.PhoneNumber));
         }
     }
 }

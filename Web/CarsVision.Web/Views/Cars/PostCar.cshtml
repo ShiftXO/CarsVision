@@ -144,12 +144,17 @@
                 <label asp-for="Description"></label>
                 <textarea asp-for="Description" class="form-control" rows="5"></textarea>
             </div>
-            <div class="col-2 float-right">
-                <label asp-for="Pictures" class="text-required font-weight-bold"></label>
-                <input asp-for="Pictures" multiple class="form form-control-file"/>
-                <span asp-validation-for="Pictures" class="text-danger"></span>
+            <div class="col">
+                <div class="form-row">
+                    <label asp-for="Pictures" class="text-required font-weight-bold"></label>
+                    <input asp-for="Pictures" multiple class="form form-control-file" />
+                    <span asp-validation-for="Pictures" class="text-danger"></span>
+                </div>
+                <div class="form-row mt-2">
+                    <label class="text-primary">All colored in <b>blue</b> are required!</label>
+                    <button class="btn btn-info my-4 btn-block" type="submit">Post</button>
+                </div>
             </div>
         </div>
-        <button class="btn btn-info my-4 btn-block" type="submit">Post</button>
     </form>
 </div>

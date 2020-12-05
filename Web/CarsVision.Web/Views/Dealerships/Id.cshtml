@@ -24,19 +24,34 @@
                 @Model.DealershipInfo.CreatedOn.ToString("d")
             </span>
         </div>
+        @*<div>
+            <ul class="item-rating">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Math.Round(@Model.AverageVote, MidpointRounding.ToEven))
+                    {
+                        <li class="star star-fill" data-vote="@i"><i class="fas fa-star"></i></li>
+                    }
+                    else
+                    {
+                        <li class="star star-empty" data-vote="@i"><i class="fas fa-star"></i></li>
+                    }
+                }
+                <li><span id="averageVoteValue">@Model.AverageVote.ToString("0.0")</span><span> / 5</span> </li>
+            </ul>
+        </div>*@
     </div>
     @foreach (var car in Model.DealershipCars)
     {
         <hr class="bg-primary" />
-        <div class="">
+        <div class="grad pb-2">
             <div class="row">
                 <i class="ml-3">
                     @car.CreatedOn.ToString("M")
                 </i>
-                <!--<i class="far fa-heart float-right"></i>-->
             </div>
             <div class="row">
-                <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id" class="ml-4">
                     <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
                 </a>
                 <div class="col">
@@ -46,11 +61,18 @@
                         </a>
                         @if (this.User.Identity.IsAuthenticated)
                         {
-                            var id = car.Id;
-                            <form id="watchlistForm" method="post"></form>
-                            <a href="" onclick="AddToWatchlist(@id)">
-                                <i class="far fa-heart float-right"></i>
-                            </a>
+                            @if (!car.IsInWatchlist)
+                            {
+                                <a>
+                                    <i class="far fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a>
+                                    <i class="fas fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                                </a>
+                            }
                         }
                         <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
                     </h5>
@@ -63,18 +85,17 @@
     }
 </div>
 <hr />
-@*<partial name="_PagingPartial" model="@Model" />*@
 
 <nav aria-label="...">
     <ul class="pagination justify-content-center">
         <li class="page-item @if (!Model.HasPreviousPage) { <text>disabled</text> }">
-            <a class="page-link" href="@Model.DealershipInfo.UserId?page=@Model.PreviousPageNumber">Previous</a>
+            <a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@Model.PreviousPageNumber">Previous</a>
         </li>
         @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
         {
             if (i > 0)
             {
-                <li class="page-item"><a class="page-link" href="@Model.DealershipInfo.UserId?page=@i">@i</a></li>
+                <li class="page-item"><a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@i">@i</a></li>
             }
         }
         <li class="page-item active" aria-current="page">
@@ -87,11 +108,11 @@
         {
             if (i <= Model.PagesCount)
             {
-                <li class="page-item"><a class="page-link" href="@Model.DealershipInfo.UserId?page=@i">@i</a></li>
+                <li class="page-item"><a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@i">@i</a></li>
             }
         }
         <li class="page-item @if (!Model.HasNextPage) { <text>disabled</text> }">
-            <a class="page-link" href="@Model.DealershipInfo.UserId?page=@Model.NextPageNumber">Next</a>
+            <a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@Model.NextPageNumber">Next</a>
         </li>
     </ul>
 </nav>

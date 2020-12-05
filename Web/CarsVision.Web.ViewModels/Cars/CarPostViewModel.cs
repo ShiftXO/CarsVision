@@ -1,9 +1,11 @@
 ﻿namespace CarsVision.Web.ViewModels.Cars
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using CarsVision.Data.Models;
+    using CarsVision.Services.Mapping;
     using CarsVision.Web.ViewModels.Colors;
     using CarsVision.Web.ViewModels.Home;
     using Microsoft.AspNetCore.Http;
@@ -63,7 +65,7 @@
 
         [Required]
         [Display(Name = "Mileage [km]")]
-        [Range(1, 5_000_00)]
+        [Range(1, 10_000_00)]
         public int Mileage { get; set; }
 
         public string Color { get; set; }
