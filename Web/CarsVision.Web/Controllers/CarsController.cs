@@ -11,28 +11,33 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    public class CarsController : Controller
+    public class CarsController : BaseController
     {
-        private readonly IMakesService makesService;
         private readonly ICarsService carsService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IWebHostEnvironment environment;
 
-        public CarsController(IMakesService makesService, ICarsService carsService, UserManager<ApplicationUser> userManager, IWebHostEnvironment environment)
+        public CarsController(
+            ICarsService carsService,
+            UserManager<ApplicationUser> userManager,
+            IWebHostEnvironment environment)
         {
-            this.makesService = makesService;
             this.carsService = carsService;
             this.userManager = userManager;
             this.environment = environment;
         }
 
         [HttpGet]
-        public IActionResult All(int id = 1)
+        public async Task<IActionResult> All(string order, int id = 1)
         {
             if (id <= 0)
             {
                 return this.NotFound();
             }
+
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            var userId = user != null ? user.Id : string.Empty;
 
             const int ItemsPerPage = 12;
             var viewModel = new CarsListViewModel
@@ -40,8 +45,9 @@
                 ItemsPerPage = ItemsPerPage,
                 PageNumber = id,
                 CarsCount = this.carsService.GetCount(),
-                Cars = this.carsService.GetAll<CarInListViewModel>(id, ItemsPerPage),
+                Cars = await this.carsService.GetAll(id, userId, ItemsPerPage),
             };
+
             return this.View(viewModel);
         }
 
@@ -80,7 +86,7 @@
 
         public IActionResult Id(int id)
         {
-            var car = this.carsService.GetById<SingleCarViewModel>(id);
+            var car = this.carsService.GetById(id);
             return this.View(car);
         }
     }
