@@ -12,6 +12,7 @@
     using CarsVision.Services.Mapping;
     using CarsVision.Web.ViewModels.Cars;
     using CarsVision.Web.ViewModels.Dealerships;
+    using Microsoft.EntityFrameworkCore;
 
     public class DealershipsService : IDealershipsService
     {
@@ -20,15 +21,18 @@
         private readonly IDeletableEntityRepository<Dealership> dealershipRepository;
         private readonly IDeletableEntityRepository<Car> carsRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> usersRepository;
+        private readonly IRepository<Watchlist> watchlistRepository;
 
         public DealershipsService(
             IDeletableEntityRepository<Dealership> dealershipRepository,
             IDeletableEntityRepository<Car> carsRepository,
-            IDeletableEntityRepository<ApplicationUser> usersRepository)
+            IDeletableEntityRepository<ApplicationUser> usersRepository,
+            IRepository<Watchlist> watchlistRepository)
         {
             this.dealershipRepository = dealershipRepository;
             this.carsRepository = carsRepository;
             this.usersRepository = usersRepository;
+            this.watchlistRepository = watchlistRepository;
         }
 
         public async Task<bool> CreateDealershipAsync(CreateDealershipInputModel input, ApplicationUser user, string picturePath)
@@ -83,13 +87,14 @@
             return dealerships;
         }
 
-        public IEnumerable<CarInListViewModel> GetAllDealershipCars(int page, string dealershipId, int itemsPerPage)
+        public async Task<IEnumerable<CarInListViewModel>> GetAllDealershipCars(int page, string dealershipId, string userId, int itemsPerPage)
         {
             var dbCar = this.carsRepository.AllAsNoTracking().Where(x => x.UserId == dealershipId);
-            var dealershipsCars = dbCar
+            var dealershipsCars = await dbCar
                 .Select(x => new CarInListViewModel
                 {
                     Id = x.Id,
+                    IsInWatchlist = userId == string.Empty ? false : this.watchlistRepository.All().Any(d => d.UserId == userId && d.CarId == x.Id),
                     MakeName = x.Make.Name,
                     ModelName = x.Model.Name,
                     Modification = x.Modification,
@@ -106,9 +111,10 @@
                 })
                 .OrderByDescending(x => x.CreatedOn)
                 .Skip((page - 1) * itemsPerPage)
-                .Take(itemsPerPage);
+                .Take(itemsPerPage)
+                .ToListAsync();
 
-            return dealershipsCars.ToList();
+            return dealershipsCars;
         }
 
         public T GetById<T>(string id)

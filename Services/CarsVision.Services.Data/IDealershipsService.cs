@@ -13,7 +13,7 @@
 
         IEnumerable<T> GetAll<T>(int page, int itemsPerPage);
 
-        IEnumerable<CarInListViewModel> GetAllDealershipCars(int page, string dealershipId, int itemsPerPage);
+        Task<IEnumerable<CarInListViewModel>> GetAllDealershipCars(int page, string dealershipId, string userId, int itemsPerPage);
 
         T GetById<T>(string id);
 
