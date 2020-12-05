@@ -10,16 +10,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarsVision.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201119132112_CarsExtrasMappingTable")]
-    partial class CarsExtrasMappingTable
+    [Migration("20201205170823_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("CarsVision.Data.Models.ApplicationRole", b =>
                 {
@@ -43,12 +43,12 @@ namespace CarsVision.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -56,7 +56,7 @@ namespace CarsVision.Data.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
+                        .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
@@ -81,8 +81,8 @@ namespace CarsVision.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -100,12 +100,12 @@ namespace CarsVision.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -123,19 +123,19 @@ namespace CarsVision.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
+                        .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
@@ -146,15 +146,15 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
-                    b.Property<int>("ColorId")
+                    b.Property<int?>("ColorId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Currency")
+                    b.Property<int?>("Currency")
                         .HasColumnType("int");
 
                     b.Property<string>("DealershipId")
@@ -166,13 +166,13 @@ namespace CarsVision.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EngineType")
+                    b.Property<int?>("EngineType")
                         .HasColumnType("int");
 
-                    b.Property<int>("EuroStandard")
+                    b.Property<int?>("EuroStandard")
                         .HasColumnType("int");
 
-                    b.Property<int>("Gearbox")
+                    b.Property<int?>("Gearbox")
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
@@ -190,7 +190,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("MakeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Mileage")
+                    b.Property<int?>("Mileage")
                         .HasColumnType("int");
 
                     b.Property<int>("ModelId")
@@ -202,20 +202,17 @@ namespace CarsVision.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Power")
+                    b.Property<int?>("Power")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Views")
+                    b.Property<int?>("Views")
                         .HasColumnType("int");
-
-                    b.Property<string>("WatchlistId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Year")
                         .HasColumnType("nvarchar(max)");
@@ -234,8 +231,6 @@ namespace CarsVision.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WatchlistId");
-
                     b.ToTable("Cars");
                 });
 
@@ -244,7 +239,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("CarId")
                         .HasColumnType("int");
@@ -266,7 +261,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -341,7 +336,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -370,7 +365,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -399,7 +394,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -433,7 +428,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CarId")
+                    b.Property<int?>("CarId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
@@ -454,6 +449,9 @@ namespace CarsVision.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("RemotePictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");
@@ -468,7 +466,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -495,10 +493,44 @@ namespace CarsVision.Data.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("CarsVision.Data.Models.Vote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DealershipId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("Value")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DealershipId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Votes");
+                });
+
             modelBuilder.Entity("CarsVision.Data.Models.Watchlist", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -517,6 +549,8 @@ namespace CarsVision.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CarId");
+
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("UserId");
@@ -529,7 +563,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -553,7 +587,7 @@ namespace CarsVision.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -632,9 +666,7 @@ namespace CarsVision.Data.Migrations
                 {
                     b.HasOne("CarsVision.Data.Models.Color", "Color")
                         .WithMany()
-                        .HasForeignKey("ColorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ColorId");
 
                     b.HasOne("CarsVision.Data.Models.Dealership", null)
                         .WithMany("Cars")
@@ -656,9 +688,13 @@ namespace CarsVision.Data.Migrations
                         .WithMany("Cars")
                         .HasForeignKey("UserId");
 
-                    b.HasOne("CarsVision.Data.Models.Watchlist", null)
-                        .WithMany("Cars")
-                        .HasForeignKey("WatchlistId");
+                    b.Navigation("Color");
+
+                    b.Navigation("Make");
+
+                    b.Navigation("Model");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CarsVision.Data.Models.CarsExtras", b =>
@@ -674,6 +710,10 @@ namespace CarsVision.Data.Migrations
                         .HasForeignKey("ExtraId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Car");
+
+                    b.Navigation("Extra");
                 });
 
             modelBuilder.Entity("CarsVision.Data.Models.Dealership", b =>
@@ -685,6 +725,10 @@ namespace CarsVision.Data.Migrations
                     b.HasOne("CarsVision.Data.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("LogoPicture");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CarsVision.Data.Models.Model", b =>
@@ -694,22 +738,49 @@ namespace CarsVision.Data.Migrations
                         .HasForeignKey("MakeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Make");
                 });
 
             modelBuilder.Entity("CarsVision.Data.Models.Picture", b =>
                 {
                     b.HasOne("CarsVision.Data.Models.Car", "Car")
                         .WithMany("Pictures")
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("CarId");
+
+                    b.Navigation("Car");
+                });
+
+            modelBuilder.Entity("CarsVision.Data.Models.Vote", b =>
+                {
+                    b.HasOne("CarsVision.Data.Models.Dealership", "Dealership")
+                        .WithMany("Votes")
+                        .HasForeignKey("DealershipId");
+
+                    b.HasOne("CarsVision.Data.Models.ApplicationUser", "User")
+                        .WithMany("Votes")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Dealership");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CarsVision.Data.Models.Watchlist", b =>
                 {
+                    b.HasOne("CarsVision.Data.Models.Car", "Car")
+                        .WithMany("Watchlists")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("CarsVision.Data.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Watchlists")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Car");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -761,6 +832,52 @@ namespace CarsVision.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CarsVision.Data.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Cars");
+
+                    b.Navigation("Claims");
+
+                    b.Navigation("Logins");
+
+                    b.Navigation("Roles");
+
+                    b.Navigation("Votes");
+
+                    b.Navigation("Watchlists");
+                });
+
+            modelBuilder.Entity("CarsVision.Data.Models.Car", b =>
+                {
+                    b.Navigation("Extras");
+
+                    b.Navigation("Pictures");
+
+                    b.Navigation("Watchlists");
+                });
+
+            modelBuilder.Entity("CarsVision.Data.Models.Dealership", b =>
+                {
+                    b.Navigation("Cars");
+
+                    b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("CarsVision.Data.Models.Extra", b =>
+                {
+                    b.Navigation("CarsExtras");
+                });
+
+            modelBuilder.Entity("CarsVision.Data.Models.Make", b =>
+                {
+                    b.Navigation("Models");
+                });
+
+            modelBuilder.Entity("CarsVision.Data.Models.Picture", b =>
+                {
+                    b.Navigation("Dealership");
                 });
 #pragma warning restore 612, 618
         }

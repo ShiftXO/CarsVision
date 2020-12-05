@@ -491,6 +491,37 @@ namespace CarsVision.Data.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("CarsVision.Data.Models.Vote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DealershipId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("Value")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DealershipId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Votes");
+                });
+
             modelBuilder.Entity("CarsVision.Data.Models.Watchlist", b =>
                 {
                     b.Property<string>("Id")
@@ -502,6 +533,12 @@ namespace CarsVision.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
@@ -511,6 +548,8 @@ namespace CarsVision.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("UserId");
 
@@ -710,10 +749,25 @@ namespace CarsVision.Data.Migrations
                     b.Navigation("Car");
                 });
 
+            modelBuilder.Entity("CarsVision.Data.Models.Vote", b =>
+                {
+                    b.HasOne("CarsVision.Data.Models.Dealership", "Dealership")
+                        .WithMany("Votes")
+                        .HasForeignKey("DealershipId");
+
+                    b.HasOne("CarsVision.Data.Models.ApplicationUser", "User")
+                        .WithMany("Votes")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Dealership");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CarsVision.Data.Models.Watchlist", b =>
                 {
                     b.HasOne("CarsVision.Data.Models.Car", "Car")
-                        .WithMany()
+                        .WithMany("Watchlists")
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -788,6 +842,8 @@ namespace CarsVision.Data.Migrations
 
                     b.Navigation("Roles");
 
+                    b.Navigation("Votes");
+
                     b.Navigation("Watchlists");
                 });
 
@@ -796,11 +852,15 @@ namespace CarsVision.Data.Migrations
                     b.Navigation("Extras");
 
                     b.Navigation("Pictures");
+
+                    b.Navigation("Watchlists");
                 });
 
             modelBuilder.Entity("CarsVision.Data.Models.Dealership", b =>
                 {
                     b.Navigation("Cars");
+
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("CarsVision.Data.Models.Extra", b =>
