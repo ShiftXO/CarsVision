@@ -146,6 +146,17 @@
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
                                 </div>
                             }
+                            else
+                            {
+                                <div class="row mr-2 mt-3 justify-content-center align-bottom">
+                                    <form method="post" asp-controller="Cars" asp-action="SendToEmail" asp-route-id="@Model.Id">
+                                        <button class="btn btn-outline-info">Send to my Email</button>
+                                    </form>
+                                </div>
+                                <div class="row mr-2 mt-3 justify-content-center align-bottom">
+                                    <button class="btn btn-outline-info" onclick="window.print()">Print</button>
+                                </div>
+                            }
                         }
                     </div>
                 </div>
