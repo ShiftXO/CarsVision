@@ -9,10 +9,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" asp-append-version="true"/>
-    <link href="~/css/custom.css" rel="stylesheet"asp-append-version="true" />
+    <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/custom.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel='stylesheet' />
 </head>
 <body>
     <header>
@@ -65,6 +67,12 @@
     <script src="~/js/LoadModels.js" asp-append-version="true"></script>
     <script src="~/js/Register.js" asp-append-version="true"></script>
     <script src="~/js/AddToWatchlist.js" asp-append-version="true"></script>
+    <script src="~/js/Stars.js" asp-append-version="true"></script>
+    <script src="~/js/Vote.js" asp-append-version="true"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+    <script src="~/js/Map.js"></script>
     @await this.RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

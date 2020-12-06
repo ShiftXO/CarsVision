@@ -2,9 +2,10 @@
 @using CarsVision.Common
 @{
     this.ViewData["Title"] = Model.MakeName + " " + Model.ModelName;
+    var apiKey = this.ViewData["MapApiKey"];
 }
 
-<div class="container">
+<div class="container" onpage>
     <div class="col">
         <div class="row">
             <div class="col-md-3">
@@ -175,10 +176,7 @@
             <span>@Model.Description</span>
         </div>
     </div>
-
-    <div class="col">
-        <!-- extras -->
-    </div>
+    <div id="map" style="width:400px; height:400px"></div>
 </div>
 
 <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
@@ -194,3 +192,39 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script>
+geocode('@Html.Raw(Json.Serialize(Model.Location))', @Html.Raw(Json.Serialize(apiKey)));
+function geocode(locationString, apiKey) {
+    var mapElement = document.getElementById("map");
+    if (mapElement == undefined) {
+        return;
+    }
+    var url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${locationString}.json`;
+    axios.get(url, {
+        params: {
+            access_token: apiKey,
+        }
+    })
+        .then(function (response) {
+            let result = response["data"]["features"][0]["geometry"]["coordinates"];
+            mapboxgl.accessToken = apiKey;
+
+            var map = new mapboxgl.Map({
+                container: 'map', // container id
+                style: 'mapbox://styles/mapbox/streets-v11', // style URL
+                center: result, // starting position [lng, lat]
+                zoom: 13 // starting zoom
+            });
+
+            var marker = new mapboxgl.Marker()
+                .setLngLat(result)
+                .addTo(map);
+        })
+        .catch(function () {
+            console.log(error);
+        })
+}
+    </script>
+}

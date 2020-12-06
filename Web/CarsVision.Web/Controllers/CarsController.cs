@@ -12,8 +12,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-	using SendGrid;
-	using SendGrid.Helpers.Mail;
+	using Microsoft.Extensions.Configuration;
 
 	public class CarsController : BaseController
     {
@@ -21,18 +20,21 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IWebHostEnvironment environment;
         private readonly IEmailSender emailSender;
+		private readonly IConfiguration configuration;
 
-        public CarsController(
+		public CarsController(
             ICarsService carsService,
             UserManager<ApplicationUser> userManager,
             IWebHostEnvironment environment,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IConfiguration configuration)
         {
             this.carsService = carsService;
             this.userManager = userManager;
             this.environment = environment;
             this.emailSender = emailSender;
-        }
+			this.configuration = configuration;
+		}
 
         [HttpGet]
         public async Task<IActionResult> All(string order, int id = 1)
@@ -93,6 +95,7 @@
 
         public IActionResult Id(int id)
         {
+            this.ViewData["MapApiKey"] = this.configuration["MapToken:ApiKey"];
             var car = this.carsService.GetById(id);
             return this.View(car);
         }
@@ -108,7 +111,7 @@
             html.AppendLine($"<h1>{car.MakeName} {car.ModelName}</h1>");
             html.AppendLine($"<h3>{car.Modification}</h3>");
             html.AppendLine($"<img src=\"{car.PictureUrl}\" />");
-            await this.emailSender.SendEmailAsync("cars@carsvision.com", "CarsVision", user.Email, car.MakeName, html.ToString());
+            await this.emailSender.SendEmailAsync("vladito222@abv.bg", "CarsVision", user.Email, car.MakeName, html.ToString());
 
             return this.RedirectToAction(nameof(this.Id), new { id });
         }
