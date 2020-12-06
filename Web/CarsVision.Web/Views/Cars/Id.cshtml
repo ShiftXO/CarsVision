@@ -221,6 +221,7 @@ function geocode(locationString, apiKey) {
             var marker = new mapboxgl.Marker()
                 .setLngLat(result)
                 .addTo(map);
+            map.addControl(new mapboxgl.NavigationControl());
         })
         .catch(function () {
             console.log(error);

@@ -276,6 +276,7 @@
             car.Description = input.Description;
             car.Power = input.Power;
             car.Mileage = input.Mileage;
+            car.Location = input.Location;
 
             await this.carRepository.SaveChangesAsync();
         }

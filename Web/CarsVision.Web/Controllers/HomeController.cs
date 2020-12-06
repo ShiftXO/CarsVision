@@ -127,7 +127,7 @@
             }
 
             await this.carsService.Update(input);
-            return this.Redirect(nameof(this.MyCars));
+            return this.Redirect("/Home/MyCars");
         }
 
         [HttpPost]
@@ -135,7 +135,7 @@
         public async Task<IActionResult> Delete(int id)
         {
             await this.carsService.Delete(id);
-            return this.Redirect(nameof(this.MyCars));
+            return this.Redirect("/Home/MyCars");
         }
 
         public IActionResult Privacy()
