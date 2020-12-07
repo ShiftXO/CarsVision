@@ -3,8 +3,8 @@
     using System;
     using System.Text;
     using System.Threading.Tasks;
-
-    using CarsVision.Data.Models;
+	using CarsVision.Common;
+	using CarsVision.Data.Models;
     using CarsVision.Services.Data;
     using CarsVision.Services.Messaging;
     using CarsVision.Web.ViewModels.Cars;
@@ -12,17 +12,17 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-	using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Configuration;
 
-	public class CarsController : BaseController
+    public class CarsController : BaseController
     {
         private readonly ICarsService carsService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IWebHostEnvironment environment;
         private readonly IEmailSender emailSender;
-		private readonly IConfiguration configuration;
+        private readonly IConfiguration configuration;
 
-		public CarsController(
+        public CarsController(
             ICarsService carsService,
             UserManager<ApplicationUser> userManager,
             IWebHostEnvironment environment,
@@ -33,8 +33,8 @@
             this.userManager = userManager;
             this.environment = environment;
             this.emailSender = emailSender;
-			this.configuration = configuration;
-		}
+            this.configuration = configuration;
+        }
 
         [HttpGet]
         public async Task<IActionResult> All(string order, int id = 1)
@@ -111,7 +111,7 @@
             html.AppendLine($"<h1>{car.MakeName} {car.ModelName}</h1>");
             html.AppendLine($"<h3>{car.Modification}</h3>");
             html.AppendLine($"<img src=\"{car.PictureUrl}\" />");
-            await this.emailSender.SendEmailAsync("vladito222@abv.bg", "CarsVision", user.Email, car.MakeName, html.ToString());
+            await this.emailSender.SendEmailAsync(GlobalConstants.SendGridSender, "CarsVision", user.Email, car.MakeName, html.ToString());
 
             return this.RedirectToAction(nameof(this.Id), new { id });
         }
