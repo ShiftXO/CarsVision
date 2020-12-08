@@ -335,5 +335,21 @@
             this.carRepository.Delete(car);
             await this.carRepository.SaveChangesAsync();
         }
+
+        public async Task<int> IncreaseViews(int carId)
+        {
+            var car = this.carRepository.All().FirstOrDefault(x => x.Id == carId);
+            if (car.Views == null)
+            {
+                car.Views = 1;
+            }
+            else
+            {
+                car.Views++;
+            }
+
+            await this.carRepository.SaveChangesAsync();
+            return (int)car.Views;
+        }
     }
 }

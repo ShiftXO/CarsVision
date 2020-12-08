@@ -171,7 +171,7 @@
         <div class="col">
             <span>Created on: @Model.CreatedOn</span>
         </div>
-        <div class="col float-right">This ad has been visited @Model.Views times.</div>
+        <div class="col float-right">This ad has been visited <span id="views" class="text-primary">@Model.Views</span> times.</div>
     </div>
     <div class="row">
         <div class="col">
@@ -197,30 +197,31 @@
 </div>
 
 @section scripts {
-    <script>
-geocode('@Json.Serialize(Model.Location)', @Json.Serialize(apiKey));
-function geocode(locationString, apiKey) {
-    var mapElement = document.getElementById("map");
-    if (mapElement == undefined) {
-        return;
-    }
-    var url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${locationString}.json`;
-    axios.get(url, {
-        params: {
-            access_token: apiKey,
+<script>
+    geocode('@Json.Serialize(Model.Location)', @Json.Serialize(apiKey));
+    function geocode(locationString, apiKey) {
+        var mapElement = document.getElementById("map");
+        if (mapElement == undefined) {
+            return;
         }
-    })
+
+        var url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${locationString}.json`;
+        axios.get(url, {
+            params: {
+                access_token: apiKey,
+            }
+        })
         .then(function (response) {
             let result = response["data"]["features"][0]["geometry"]["coordinates"];
             mapboxgl.accessToken = apiKey;
-
+    
             var map = new mapboxgl.Map({
                 container: 'map', // container id
                 style: 'mapbox://styles/mapbox/streets-v11', // style URL
                 center: result, // starting position [lng, lat]
                 zoom: 13 // starting zoom
             });
-
+    
             var marker = new mapboxgl.Marker()
                 .setLngLat(result)
                 .addTo(map);
@@ -229,6 +230,19 @@ function geocode(locationString, apiKey) {
         .catch(function () {
             console.log(error);
         })
-}
-    </script>
+    }
+</script>
+    
+<script>
+        let views = document.getElementById('views');
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var result = this.responseText;
+                views.textContent = result;
+            }
+        };
+        xhr.open("GET", "/Cars/IncreaseViews?id=" + @Model.Id);
+        xhr.send();
+</script>
 }

@@ -25,5 +25,7 @@
         Task Update(CarEditViewModel car);
 
         Task Delete(int id);
+
+        Task<int> IncreaseViews(int carId);
     }
 }
