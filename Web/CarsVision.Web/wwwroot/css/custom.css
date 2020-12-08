@@ -38,3 +38,45 @@ textarea {
 .grad {
     background-image: linear-gradient(180deg, white, #e1ebfc);
 }
+.item-rating li {
+    display: inline-block;
+}
+
+    .item-rating li i {
+        font-size: 14px;
+    }
+
+    .item-rating li span {
+        color: #ffffff;
+        display: inline-block;
+        margin-left: 8px;
+    }
+
+        .item-rating li span span {
+            color: #bebebe;
+            margin-left: 0;
+        }
+
+    .item-rating li.star-fill > i {
+        color: #ffb300;
+    }
+
+    .item-rating li.star-empty > i {
+        color: #d9d9d9;
+    }
+
+    .item-rating li span {
+        color: #444444;
+        display: inline-block;
+        margin-left: 8px;
+    }
+
+        .item-rating li span span {
+            color: #bebebe;
+            margin-left: 0;
+        }
+
+.registerToggle {
+    cursor: pointer;
+    color: #0275d8;
+}

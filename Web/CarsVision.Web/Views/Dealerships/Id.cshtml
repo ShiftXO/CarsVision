@@ -4,90 +4,93 @@
     this.ViewData["Title"] = Model.DealershipInfo.Name;
 }
 
-<div class="container col-6 justify-content-center">
-    <div class="row">
+
+<div class="row">
+    <div>
+        <img src="@Model.DealershipInfo.LogoPicture" class="mr-3 img-responsive d-block" alt="@Model.DealershipInfo.Name">
+    </div>
+    <div class="col">
+        <h5>
+            @Model.DealershipInfo.Name
+        </h5>
         <div>
-            <img src="@Model.DealershipInfo.LogoPicture" class="mr-3 img-responsive d-block" alt="@Model.DealershipInfo.Name">
-        </div>
-        <div class="col">
-            <h5>
-                @Model.DealershipInfo.Name
-            </h5>
-            <div>
-                <span>@Model.DealershipInfo.Location</span>
-            </div>
-            <div>
-                <span>@Model.DealershipInfo.PhoneNumber</span>
-            </div>
-            <span>
-                Dealership in CarsVision since
-                @Model.DealershipInfo.CreatedOn.ToString("d")
-            </span>
+            <span>@Model.DealershipInfo.Location</span>
         </div>
         <div>
-            @*<i class="fas fa-star text-secondary" onclick="rate(1, '@id')"></i>
-                <i class="fas fa-star text-secondary" onclick="rate(2, '@id')"></i>
-                <i class="fas fa-star text-secondary" onclick="rate(3, '@id')"></i>
-                <i class="fas fa-star text-secondary" onclick="rate(4, '@id')"></i>
-                <i class="fas fa-star text-secondary" onclick="rate(5, '@id')"></i>
-                <span id="averageVoteValue">@Model.DealershipInfo.AverageVote.ToString("0.0")</span><span> / 5</span>*@
+            <span>@Model.DealershipInfo.PhoneNumber</span>
+        </div>
+        <span>
+            Dealership in CarsVision since
+            @Model.DealershipInfo.CreatedOn.ToString("d")
+        </span>
+    </div>
+    <div>
+        @if (this.User.Identity.IsAuthenticated)
+        {
             <ul class="item-rating">
-                <li class="star-fill" data-vote="1"><i class="fas fa-star"></i></li>
-                <li class="star-fill" data-vote="2"><i class="fas fa-star"></i></li>
-                <li class="star-fill" data-vote="3"><i class="fas fa-star"></i></li>
-                <li class="star-fill" data-vote="4"><i class="fas fa-star"></i></li>
-                <li class="star-fill" data-vote="5"><i class="fas fa-star"></i></li>
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Model.DealershipInfo.AverageVote)
+                    {
+                        <li class="star-fill" data-vote="@i"><i class="fas fa-star"></i></li>
+                    }
+                    else
+                    {
+                        <li class="star-empty" data-vote="@i"><i class="fas fa-star"></i></li>
+                    }
+                }
                 <li><span id="averageVoteValue">@Model.DealershipInfo.AverageVote.ToString("0.0")</span><span> / 5</span> </li>
             </ul>
+        }
+    </div>
+</div>
+@foreach (var car in Model.DealershipCars)
+{
+    <hr class="bg-primary" />
+    <div class="grad pb-2">
+        <div class="row">
+            <i class="ml-3">
+                @car.CreatedOn.ToString("M")
+            </i>
+        </div>
+        <div class="row">
+            <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id" class="ml-4">
+                <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
+            </a>
+            <div class="col">
+                <h5>
+                    <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                        @car.CarTitle
+                    </a>
+                    @if (this.User.Identity.IsAuthenticated)
+                    {
+                        @if (!car.IsInWatchlist)
+                        {
+                            <a>
+                                <i class="far fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a>
+                                <i class="fas fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                            </a>
+                        }
+                    }
+                    <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
+                </h5>
+                <span>Prod. year - @car.Year... Mileage - @car.Mileage...</span>
+                <span>Color - @car.ColorName... Location - @car.Location...</span>
+                <span>Phone - @car.UserPhoneNumber</span>
+            </div>
         </div>
     </div>
-    @foreach (var car in Model.DealershipCars)
-    {
-        <hr class="bg-primary" />
-        <div class="grad pb-2">
-            <div class="row">
-                <i class="ml-3">
-                    @car.CreatedOn.ToString("M")
-                </i>
-            </div>
-            <div class="row">
-                <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id" class="ml-4">
-                    <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
-                </a>
-                <div class="col">
-                    <h5>
-                        <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
-                            @car.CarTitle
-                        </a>
-                        @if (this.User.Identity.IsAuthenticated)
-                        {
-                            @if (!car.IsInWatchlist)
-                            {
-                                <a>
-                                    <i class="far fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
-                                </a>
-                            }
-                            else
-                            {
-                                <a>
-                                    <i class="fas fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
-                                </a>
-                            }
-                        }
-                        <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
-                    </h5>
-                    <span>Prod. year - @car.Year... Mileage - @car.Mileage...</span>
-                    <span>Color - @car.ColorName... Location - @car.Location...</span>
-                    <span>Phone - @car.UserPhoneNumber</span>
-                </div>
-            </div>
-        </div>
-    }
-</div>
+}
+
 <form method="post" id="antiForgeryForm"></form>
 <hr />
 
-@section scripts{ 
+@section scripts{
     <script>
         $("li[data-vote]").each(function (el) {
             $(this).click(function () {
@@ -104,7 +107,18 @@
                     },
                     success: function (data) {
                         $('#averageVoteValue').html(data.averageVote.toFixed(1));
-                        console.log(data);
+
+                        var stars = Array.from($(".fa-star"));
+                        for (var i = 0; i < stars.length; i++) {
+
+                            if (i < Math.floor(data.averageVote)) {
+                                stars[i].parentNode.classList.remove('star-empty');
+                                stars[i].parentNode.classList.add('star-fill');
+                            } else {
+                                stars[i].parentNode.classList.remove('star-fill');
+                                stars[i].parentNode.classList.add('star-empty');
+                            }
+                        }
                     },
                     contentType: 'application/json',
                 });

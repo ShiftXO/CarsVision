@@ -1,6 +1,5 @@
 ﻿namespace CarsVision.Web.ViewModels.Dealerships
 {
-
     using Microsoft.AspNetCore.Http;
 
     public class CreateDealershipInputModel

@@ -4,52 +4,51 @@
     this.ViewData["Title"] = "My Cars, page " + Model.PageNumber;
 }
 
-<div class="container col-6 justify-content-center">
-    @foreach (var car in Model.Cars)
-    {
-        <hr class="bg-primary" />
-        <div class="grad pb-2">
-            <div class="row">
-                <i class="ml-3">
-                    @car.CreatedOn.ToString("M")
-                </i>
-            </div>
-            <div class="row">
-                <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
-                    <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
-                </a>
-                <div class="col">
-                    <h5>
-                        <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
-                            @car.CarTitle
-                        </a>
-                        @if (this.User.Identity.IsAuthenticated)
+
+@foreach (var car in Model.Cars)
+{
+    <hr class="bg-primary" />
+    <div class="grad pb-2">
+        <div class="row">
+            <i class="ml-3">
+                @car.CreatedOn.ToString("M")
+            </i>
+        </div>
+        <div class="row">
+            <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
+            </a>
+            <div class="col">
+                <h5>
+                    <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                        @car.CarTitle
+                    </a>
+                    @if (this.User.Identity.IsAuthenticated)
+                    {
+                        @if (!car.IsInWatchlist)
                         {
-                            @if (!car.IsInWatchlist)
-                            {
-                                <a>
-                                    <i class="far fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
-                                </a>
-                            }
-                            else
-                            {
-                                <a>
-                                    <i class="fas fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
-                                </a>
-                            }
+                            <a>
+                                <i class="far fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                            </a>
                         }
-                        <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
-                    </h5>
-                    <span>Prod. year - @car.Year... Mileage - @car.Mileage...</span>
-                    <span>Color - @car.ColorName... Location - @car.Location...</span>
-                    <span>Phone - @car.UserPhoneNumber</span>
-                </div>
+                        else
+                        {
+                            <a>
+                                <i class="fas fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i>
+                            </a>
+                        }
+                    }
+                    <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
+                </h5>
+                <span>Prod. year - @car.Year... Mileage - @car.Mileage...</span>
+                <span>Color - @car.ColorName... Location - @car.Location...</span>
+                <span>Phone - @car.UserPhoneNumber</span>
             </div>
         </div>
-    }
-</div>
+    </div>
+}
+
 <hr />
-@*<partial name="_PagingPartial" model="@Model" />*@
 
 <nav aria-label="...">
     <ul class="pagination justify-content-center">

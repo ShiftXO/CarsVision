@@ -145,7 +145,7 @@
                     x.UserId,
                     LogoPictureId = x.LogoPicture.Id,
                     LogoPictureExtension = x.LogoPicture.Extension,
-                    AverageVote = x.Votes.Average(x => x.Value),
+                    AverageVote = !x.Votes.Any() ? 0 : x.Votes.Average(x => x.Value),
                 })
                 .FirstOrDefault(x => x.UserId == id);
 
@@ -166,8 +166,6 @@
 
         public int GetDealershipsCarsCount(string id)
         {
-            var user = this.usersRepository.AllAsNoTracking().Where(x => x.Id == id).Select(x => x.Cars).FirstOrDefault().Count;
-
             return this.usersRepository.AllAsNoTracking().Where(x => x.Id == id).Select(x => x.Cars).FirstOrDefault().Count;
         }
     }

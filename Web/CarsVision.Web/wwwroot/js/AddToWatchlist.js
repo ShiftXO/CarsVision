@@ -1,5 +1,5 @@
 ﻿function AddToWatchlist(id) {
-    var hearts = document.querySelectorAll("body > main > div > div > div > div > h5 > a > i");
+    var hearts = document.querySelectorAll(".fa-heart");
     let arr = Array.from(hearts);
     var i = arr.filter(x => x.attributes[1].nodeValue == id);
     let xhr = new XMLHttpRequest();
