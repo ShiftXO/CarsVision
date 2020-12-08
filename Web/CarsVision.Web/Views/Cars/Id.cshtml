@@ -198,7 +198,7 @@
 
 @section scripts {
     <script>
-geocode('@Html.Raw(Json.Serialize(Model.Location))', @Html.Raw(Json.Serialize(apiKey)));
+geocode('@Json.Serialize(Model.Location)', @Json.Serialize(apiKey));
 function geocode(locationString, apiKey) {
     var mapElement = document.getElementById("map");
     if (mapElement == undefined) {
