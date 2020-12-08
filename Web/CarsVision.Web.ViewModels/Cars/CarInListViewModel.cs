@@ -41,6 +41,12 @@
 
         public string Description { get; set; }
 
+        public decimal PriceOrder { get; set; }
+
+        public Gearbox Gearbox { get; set; }
+
+        public EngineType EngineType { get; set; }
+
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Car, CarInListViewModel>()

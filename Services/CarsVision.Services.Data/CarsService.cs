@@ -205,18 +205,38 @@
             return this.carRepository.AllAsNoTracking().Count();
         }
 
-        public (IEnumerable<T> Cars, int Count) SearchCars<T>(CarsSearchInputModel car, int page, int itemsPerPage)
+        public (IEnumerable<CarInListViewModel> Cars, int Count) SearchCars<T>(CarsSearchInputModel car, string userId, int page, int itemsPerPage)
         {
-            var query = this.carRepository.AllAsNoTracking().AsQueryable();
+            var query = this.carRepository.AllAsNoTracking()
+                .Select(x => new CarInListViewModel
+                {
+                    Id = x.Id,
+                    IsInWatchlist = userId == string.Empty ? false : this.watchlistRepository.All().Any(d => d.UserId == userId && d.CarId == x.Id),
+                    MakeName = x.Make.Name,
+                    ModelName = x.Model.Name,
+                    Modification = x.Modification,
+                    Year = x.Year,
+                    Location = x.Location,
+                    Mileage = (int)x.Mileage,
+                    ColorName = x.Color.Name,
+                    UserPhoneNumber = x.User.PhoneNumber,
+                    Currency = x.Currency.ToString(),
+                    CreatedOn = x.CreatedOn,
+                    Price = (decimal)x.Price,
+                    PriceOrder = x.Currency == Currency.EUR ? ((decimal)x.Price * 1.96M) : x.Currency == Currency.USD ? ((decimal)x.Price * 1.61M) : (decimal)x.Price,
+                    Description = x.Description,
+                    PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
+                })
+                .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(car.Make))
+            if (!string.IsNullOrWhiteSpace(car.Make) && car.Make != "All")
             {
-                query = query.Where(x => x.Make.Name == car.Make);
+                query = query.Where(x => x.MakeName == car.Make);
             }
 
             if (!string.IsNullOrWhiteSpace(car.Model) && car.Model != "All")
             {
-                query = query.Where(x => x.Model.Name == car.Model);
+                query = query.Where(x => x.ModelName == car.Model);
             }
 
             if (car.EngineType != EngineType.Unknown)
@@ -229,9 +249,17 @@
                 query = query.Where(x => x.Gearbox == car.Gearbox);
             }
 
-            if (car.Price > 0)
+            if (car.MinPrice > 0 && car.MaxPrice > 0)
             {
-                query = query.Where(x => x.Price <= car.Price);
+                query = query.Where(x => x.Price >= car.MinPrice && x.Price <= car.MaxPrice);
+            }
+            else if (car.MinPrice > 0)
+            {
+                query = query.Where(x => x.Price >= car.MinPrice);
+            }
+            else if (car.MaxPrice > 0)
+            {
+                query = query.Where(x => x.Price >= car.MaxPrice);
             }
 
             if (car.Year > 0)
@@ -239,10 +267,30 @@
                 query = query.Where(x => x.Year.Contains(car.Year.ToString()));
             }
 
-            query.OrderByDescending(x => x.CreatedOn)
-            .Skip((page - 1) * itemsPerPage);
+            if (car.Order == "Make/Model/Price")
+            {
+                query = query.OrderBy(x => x.MakeName)
+                    .ThenBy(x => x.ModelName)
+                    .ThenBy(x => x.Price)
+                    .Skip((page - 1) * itemsPerPage);
+            }
+            else if (car.Order == "Price Asc.")
+            {
+                query = query.OrderBy(x => x.PriceOrder)
+                    .Skip((page - 1) * itemsPerPage);
+            }
+            else if (car.Order == "Price Desc.")
+            {
+                query = query.OrderByDescending(x => x.PriceOrder)
+                    .Skip((page - 1) * itemsPerPage);
+            }
+            else if (car.Order == "Mileage")
+            {
+                query = query.OrderBy(x => x.Mileage)
+                    .Skip((page - 1) * itemsPerPage);
+            }
 
-            return (query.To<T>().Take(itemsPerPage).ToList(), query.To<T>().ToList().Count);
+            return (query.Take(itemsPerPage).ToList(), query.ToList().Count);
         }
 
         public async Task Update(CarEditViewModel input)

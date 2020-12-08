@@ -6,19 +6,21 @@
 }
 
 <div class="container" onpage>
-    <div class="col">
-        <div class="row">
-            <div class="col-md-3">
+    <div class="col justify-content-center">
+        <div class="row mb-3">
+            <div class="col">
                 <h4 class="text-primary">
                     @Model.MakeName @Model.ModelName @Model.Modification
                 </h4>
             </div>
             <div class="col">
-                <strong class="float-left text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
-                @if (this.User.Identity.IsAuthenticated)
-                {
-                    <i class="far fa-heart float-left zoom" data-i-holder="@Model.Id" onclick="AddToWatchlist(@Model.Id)"></i>
-                }
+                <h4>
+                    @if (this.User.Identity.IsAuthenticated)
+                    {
+                        <i class="far fa-heart float-right text-primary zoom" data-i-holder="@Model.Id" onclick="AddToWatchlist(@Model.Id)"></i>
+                    }
+                    <strong class="float-right mr-3 text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                </h4>
             </div>
         </div>
         <div id="carouselExampleIndicators" class="carousel slide row-cols-sm-1" data-interval="false" data-ride="carousel">
@@ -54,13 +56,14 @@
         <div class="row">
             <div class="col">
                 <h4 class="text-primary">
-                    <span>@Model.MakeName @Model.ModelName @Model.Modification</span>
-                    <span>@Math.Truncate(Model.Price) @Model.Currency</span>
+                    @Model.MakeName @Model.ModelName @Model.Modification
                 </h4>
             </div>
-            @*<div class="col-sm-1">
+            <div class="col">
+                <h4>
                     <strong class="float-right text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
-                </div>*@
+                </h4>
+            </div>
         </div>
         <div class="grid">
             <div class="row">

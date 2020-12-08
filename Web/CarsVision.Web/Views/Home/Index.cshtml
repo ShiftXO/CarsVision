@@ -29,9 +29,13 @@
         </div>
 
         <div class="form-row mb-3 text-left">
-            <div class="col">
+            <div class="col-3">
+                <label>Min. Price</label>
+                <input name="minprice" type="number" class="form-control mb-4">
+            </div>
+            <div class="col-3">
                 <label>Max. Price</label>
-                <input name="price" type="number" class="form-control mb-4">
+                <input name="maxprice" type="number" class="form-control mb-4">
             </div>
             <div class="col">
                 <label>Year</label>
@@ -56,7 +60,17 @@
                 </select>
             </div>
         </div>
-
+        <div class="form-row mb-3 text-left">
+            <div class="col">
+                <label>Order by</label>
+                <select name="order" class="form-control">
+                    <option value="Make/Model/Price">Make/Model/Price</option>
+                    <option value="Price Asc.">Price Asc.</option>
+                    <option value="Price Desc.">Price Desc.</option>
+                    <option value="Mileage">Mileage</option>
+                </select>
+            </div>
+        </div>
         <button class="btn btn-info my-4 btn-block" type="submit">Search</button>
     </form>
 </div>

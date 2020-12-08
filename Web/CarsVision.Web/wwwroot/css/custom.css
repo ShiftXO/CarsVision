@@ -13,6 +13,7 @@ a:hover {
 .carItem {
     width: 200px;
     height: 150px;
+    object-fit:cover;
 }
 
     .carItem:hover {
@@ -34,6 +35,9 @@ textarea {
 .carousel {
     width: 1920px;
     max-width: 80%;
+}
+#carouselExampleIndicators{
+    margin: auto;
 }
 .grad {
     background-image: linear-gradient(180deg, white, #e1ebfc);

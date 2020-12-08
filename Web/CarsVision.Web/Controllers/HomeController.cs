@@ -39,16 +39,20 @@
         }
 
         [HttpGet]
-        public IActionResult Search(CarsSearchInputModel car, int id = 1)
+        public async Task<IActionResult> Search(CarsSearchInputModel car, int id = 1)
         {
             if (id <= 0)
             {
                 return this.NotFound();
             }
 
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            var userId = user != null ? user.Id : string.Empty;
+
             const int ItemsPerPage = 12;
 
-            var result = this.carsService.SearchCars<CarInListViewModel>(car, id, ItemsPerPage);
+            var result = this.carsService.SearchCars<CarInListViewModel>(car, userId, id, ItemsPerPage);
 
             var viewModel = new CarsSearchInputModel
             {
@@ -59,9 +63,11 @@
                 Make = car.Make,
                 Model = car.Model,
                 Year = car.Year,
-                Price = car.Price,
+                MinPrice = car.MinPrice,
+                MaxPrice = car.MaxPrice,
                 EngineType = car.EngineType,
                 Gearbox = car.Gearbox,
+                Order = car.Order,
             };
 
             return this.View(viewModel);
