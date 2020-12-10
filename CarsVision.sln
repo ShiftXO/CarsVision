@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{E389DEB6-5F90-444B-A054-12A10D39C76F}"
 EndProject
@@ -37,7 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarsVision.Services.Data.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarsVision.Web.Tests", "Tests\CarsVision.Web.Tests\CarsVision.Web.Tests.csproj", "{3EE06C6E-C8F3-418A-A309-8AC81976A074}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarsVision.Web.ViewModels", "Web\CarsVision.Web.ViewModels\CarsVision.Web.ViewModels.csproj", "{13B7AACB-9C85-4409-8D4B-95A67D0DFFF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarsVision.Web.ViewModels", "Web\CarsVision.Web.ViewModels\CarsVision.Web.ViewModels.csproj", "{13B7AACB-9C85-4409-8D4B-95A67D0DFFF7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarsVisionML.Model", "Web\CarsVisionML.Model\CarsVisionML.Model.csproj", "{062ED363-8811-4145-BB85-F3C5F6C85301}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarsVisionML.ConsoleApp", "Web\CarsVisionML.ConsoleApp\CarsVisionML.ConsoleApp.csproj", "{D630202D-92CF-4DDB-BD1B-37FA0436BE74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +105,14 @@ Global
 		{13B7AACB-9C85-4409-8D4B-95A67D0DFFF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13B7AACB-9C85-4409-8D4B-95A67D0DFFF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13B7AACB-9C85-4409-8D4B-95A67D0DFFF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{062ED363-8811-4145-BB85-F3C5F6C85301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{062ED363-8811-4145-BB85-F3C5F6C85301}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{062ED363-8811-4145-BB85-F3C5F6C85301}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{062ED363-8811-4145-BB85-F3C5F6C85301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D630202D-92CF-4DDB-BD1B-37FA0436BE74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D630202D-92CF-4DDB-BD1B-37FA0436BE74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D630202D-92CF-4DDB-BD1B-37FA0436BE74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D630202D-92CF-4DDB-BD1B-37FA0436BE74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

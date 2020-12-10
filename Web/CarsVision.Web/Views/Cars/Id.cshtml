@@ -200,7 +200,7 @@
 <script>
     geocode('@Json.Serialize(Model.Location)', @Json.Serialize(apiKey));
     function geocode(locationString, apiKey) {
-        var mapElement = document.getElementById("map");
+        var mapElement = document.getElementById('map');
         if (mapElement == undefined) {
             return;
         }
@@ -212,7 +212,7 @@
             }
         })
         .then(function (response) {
-            let result = response["data"]["features"][0]["geometry"]["coordinates"];
+            let result = response['data']['features'][0]['geometry']['coordinates'];
             mapboxgl.accessToken = apiKey;
     
             var map = new mapboxgl.Map({
@@ -242,7 +242,7 @@
                 views.textContent = result;
             }
         };
-        xhr.open("GET", "/Cars/IncreaseViews?id=" + @Model.Id);
+        xhr.open('GET', '/Cars/IncreaseViews?id=' + @Model.Id);
         xhr.send();
 </script>
 }

@@ -6,7 +6,7 @@
 }
 
 <div class="form container">
-    <form method="post" class="text-center border border-light p-5" enctype="multipart/form-data">
+    <form method="post" id="deleteForm" class="text-center border border-light p-5" enctype="multipart/form-data">
         <h5 class="card-header info-color white-text text-center py-4">
             <strong>Post Car</strong>
         </h5>
@@ -152,9 +152,60 @@
                 </div>
                 <div class="form-row mt-2">
                     <label class="text-primary">All colored in <b>blue</b> are required!</label>
-                    <button class="btn btn-info my-4 btn-block" type="submit">Post</button>
+                    <button class="btn btn-info my-4 btn-block" id="submitBtn" type="submit">Post</button>
                 </div>
             </div>
         </div>
     </form>
 </div>
+
+<div class="modal" tabindex="-1" role="dialog" id="MLInfoModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4>Info.</h4>
+                <p>Cars Vision suggests price for vihicle with those parameter arround <span class="text-primary" id="price"></span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnYes" class="btn btn-danger" disabled onclick="deleteForm.submit()">I'll set the price</button>
+                <button type="button" id="btnNo" class="btn btn-secondary" disabled data-dismiss="modal">Back</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var btn = document.getElementById('submitBtn');
+        btn.addEventListener('click', (e) => {
+            var make = document.getElementById('makes').value;
+            var model = document.getElementById('models').value;
+            var gearbox = document.getElementById('Gearbox').value;
+            var power = document.getElementById('Power').value;
+            var year = document.getElementById('Year').value;
+            var mileage = document.getElementById('Mileage').value;
+            var eurostandard = document.getElementById('EuroStandard').value;
+            var currency = document.getElementById('Currency').value;
+
+            var price = document.getElementById('price');
+            if (make != '' && model != '' && gearbox != '0' && year != null && year > 1930 && mileage != null && mileage > 0) {
+                $('#MLInfoModal').modal();
+                $.ajax({
+                    type: 'GET',
+                    url: '/ML/Predict',
+                    data: { make: make, model: model, gearbox: gearbox, power: power, year: year, mileage: mileage, eurostandard: eurostandard, currency: currency },
+                    success: function (data) {
+                        let yes = document.getElementById('btnYes');
+                        let no = document.getElementById('btnNo');
+
+                        yes.disabled = false;
+                        no.disabled = false;
+                        price.textContent = data;
+                    },
+                    contentType: 'application/json',
+                });
+            }
+        })
+    </script>
+}

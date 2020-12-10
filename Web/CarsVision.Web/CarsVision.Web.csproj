@@ -33,6 +33,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.ML" Version="1.5.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
@@ -54,5 +55,12 @@
     <ProjectReference Include="..\..\Services\CarsVision.Services\CarsVision.Services.csproj" />
     <ProjectReference Include="..\CarsVision.Web.Infrastructure\CarsVision.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\CarsVision.Web.ViewModels\CarsVision.Web.ViewModels.csproj" />
+    <ProjectReference Include="..\CarsVisionML.Model\CarsVisionML.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MLModels\MLModel.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
