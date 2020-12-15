@@ -84,6 +84,7 @@
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IVotesService, VotesService>();
             services.AddTransient<IMLService, MLService>();
+            services.AddTransient<ICommonService, CommonService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
