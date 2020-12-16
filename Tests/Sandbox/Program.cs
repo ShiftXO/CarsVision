@@ -57,29 +57,28 @@
             var settingsService = serviceProvider.GetService<ISettingsService>();
             Console.WriteLine($"Count of settings: {settingsService.GetCount()}");
 
-            var carsScrapperService = serviceProvider.GetService<ICarsScrapperService>();
+            // var carsScrapperService = serviceProvider.GetService<ICarsScrapperService>();
 
-            var properties = carsScrapperService.PopulateDb(3500);
+            // var properties = carsScrapperService.PopulateDb(3500);
 
-            //string path = $"C:\\Users\\Vlad\\Desktop\\cars.bg-raw-data-{DateTime.Now:yyyy-MM-dd}.csv";
-            //if (!File.Exists(path))
-            //{
-            //    // Create a file to write to.
-            //    using (StreamWriter sw = File.CreateText(path))
-            //    {
-            //        sw.WriteLine("Hello");
-            //        sw.WriteLine("And");
-            //        sw.WriteLine("Welcome");
-            //    }
-            //}
+            // string path = $"C:\\Users\\Vlad\\Desktop\\cars.bg-raw-data-{DateTime.Now:yyyy-MM-dd}.csv";
+            // if (!File.Exists(path))
+            // {
+            //     // Create a file to write to.
+            //     using (StreamWriter sw = File.CreateText(path))
+            //     {
+            //         sw.WriteLine("Hello");
+            //         sw.WriteLine("And");
+            //         sw.WriteLine("Welcome");
+            //     }
+            // }
 
-            using var csvWriter = new CsvWriter(new StreamWriter(File.OpenWrite($"C:\\Users\\Vlad\\Desktop\\project stuff\\cars.bg-raw-data-{DateTime.Now:yyyy-MM-dd}.csv"), Encoding.UTF8), CultureInfo.CurrentCulture);
-            csvWriter.WriteRecords(properties);
+            // using var csvWriter = new CsvWriter(new StreamWriter(File.OpenWrite($"C:\\Users\\Vlad\\Desktop\\project stuff\\cars.bg-raw-data-{DateTime.Now:yyyy-MM-dd}.csv"), Encoding.UTF8), CultureInfo.CurrentCulture);
+            // csvWriter.WriteRecords(properties);
 
-            File.WriteAllText(
-             $"cars.json",
-             JsonConvert.SerializeObject(properties));
-
+            // File.WriteAllText(
+            //  $"cars.json",
+            //  JsonConvert.SerializeObject(properties));
             return await Task.FromResult(0);
         }
 

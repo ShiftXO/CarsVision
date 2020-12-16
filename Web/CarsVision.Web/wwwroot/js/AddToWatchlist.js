@@ -1,16 +1,16 @@
 ﻿function AddToWatchlist(id) {
     var hearts = document.querySelectorAll(".fa-heart");
     let arr = Array.from(hearts);
-    var i = arr.filter(x => x.attributes[1].nodeValue == id);
+    var heart = arr.filter(x => x.attributes[1].nodeValue == id);
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let isAdded = this.responseText;
             if (isAdded == "created") {
-                i[0].className = "fas fa-heart float-right zoom text-primary";
+                heart[0].className = "fas fa-heart float-right zoom text-primary";
             }
             else {
-                i[0].className = "far fa-heart float-right zoom text-primary";
+                heart[0].className = "far fa-heart float-right zoom text-primary";
             }
         }
     };
