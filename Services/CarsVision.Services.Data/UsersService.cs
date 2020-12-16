@@ -58,9 +58,9 @@
             }
         }
 
-        public async Task<IEnumerable<CarInListViewModel>> GetAll(int page, int itemsPerPage, string userId)
+        public IEnumerable<CarInListViewModel> GetAll(int page, int itemsPerPage, string userId)
         {
-            var cars = await this.carRepository.AllAsNoTracking()
+            var cars = this.carRepository.AllAsNoTracking()
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.Id)
                 .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
@@ -82,7 +82,7 @@
                     Description = x.Description,
                     PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
                 })
-                .ToListAsync();
+                .ToList();
             return cars;
         }
 

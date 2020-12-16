@@ -8,7 +8,7 @@
 
     public interface IUsersService
     {
-        Task<IEnumerable<CarInListViewModel>> GetAll(int page, int itemsPerPage, string userId);
+        IEnumerable<CarInListViewModel> GetAll(int page, int itemsPerPage, string userId);
 
         int GetCount(string userId);
 

@@ -15,6 +15,6 @@
 
         bool IsInWatchlist(int id, string userId);
 
-        Task<IEnumerable<CarInListViewModel>> GetAll(int page, int itemsPerPage, string userId);
+        IEnumerable<CarInListViewModel> GetAll(int page, int itemsPerPage, string userId);
     }
 }

@@ -52,7 +52,7 @@
 
             const int ItemsPerPage = 12;
 
-            var result = this.carsService.SearchCars<CarInListViewModel>(car, userId, id, ItemsPerPage);
+            var result = this.carsService.SearchCars(car, userId, id, ItemsPerPage);
 
             var viewModel = new CarsSearchInputModel
             {
@@ -90,7 +90,7 @@
                 ItemsPerPage = ItemsPerPage,
                 PageNumber = id,
                 CarsCount = this.usersService.GetCount(user.Id),
-                Cars = await this.usersService.GetAll(id, ItemsPerPage, user.Id),
+                Cars = this.usersService.GetAll(id, ItemsPerPage, user.Id),
             };
             return this.View(viewModel);
         }

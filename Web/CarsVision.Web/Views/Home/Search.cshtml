@@ -51,12 +51,12 @@
             </i>
         </div>
         <div class="row">
-            <a class="ml-4" asp-action="Id" asp-route-id="@car.Id">
+            <a class="ml-4" asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
                 <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
             </a>
             <div class="col">
                 <h5>
-                    <a asp-action="Id" asp-route-id="@car.Id">
+                    <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
                         @car.CarTitle
                     </a>
                     @if (this.User.Identity.IsAuthenticated)

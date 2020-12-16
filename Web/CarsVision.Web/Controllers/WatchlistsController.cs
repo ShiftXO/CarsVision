@@ -37,7 +37,7 @@
                 ItemsPerPage = ItemsPerPage,
                 PageNumber = id,
                 CarsCount = this.watchlistsService.GetCount(user.Id),
-                Cars = await this.watchlistsService.GetAll(id, ItemsPerPage, user.Id),
+                Cars = this.watchlistsService.GetAll(id, ItemsPerPage, user.Id),
             };
 
             return this.View(viewModel);

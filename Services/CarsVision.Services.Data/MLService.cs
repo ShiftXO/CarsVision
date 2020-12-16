@@ -1,9 +1,5 @@
 ﻿namespace CarsVision.Services.Data
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     using CarsVision.Web.ViewModels.Cars;
 
     public class MLService : IMLService
@@ -13,11 +9,6 @@
             var euro = input.EuroStandard.ToString().Replace("Euro_", "EURO ");
             var gearbox = input.Gearbox.ToString();
             gearbox = gearbox == "Manual" ? "Ръчни скорости" : "Автоматични скорости";
-
-            if (input.Year == null)
-            {
-                input.Year = 1930.ToString();
-            }
 
             var obj = new MLCarDTO
             {

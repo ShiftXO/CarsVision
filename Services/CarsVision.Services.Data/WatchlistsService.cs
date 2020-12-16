@@ -44,9 +44,11 @@
             await this.watchlistRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CarInListViewModel>> GetAll(int page, int itemsPerPage, string userId)
+        public IEnumerable<CarInListViewModel> GetAll(int page, int itemsPerPage, string userId)
         {
-            var cars = await this.watchlistRepository.AllAsNoTracking()
+            var t = this.watchlistRepository.AllAsNoTracking()
+                .Where(x => x.UserId == userId).FirstOrDefault();
+            var cars = this.watchlistRepository.AllAsNoTracking()
                 .Where(x => x.UserId == userId)
                 .Select(x => new CarInListViewModel
                 {
@@ -68,7 +70,7 @@
                 })
                 .OrderByDescending(x => x.Id)
                 .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
-                .ToListAsync();
+                .ToList();
 
             return cars;
         }
