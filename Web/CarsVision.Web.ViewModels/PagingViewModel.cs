@@ -19,5 +19,7 @@
         public int CarsCount { get; set; }
 
         public int ItemsPerPage { get; set; }
+
+        public string Order { get; set; }
     }
 }

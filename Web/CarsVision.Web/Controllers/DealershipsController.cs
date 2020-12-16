@@ -38,7 +38,7 @@
             return this.View(viewModel);
         }
 
-        public async Task<IActionResult> Id(string id, int page = 1)
+        public async Task<IActionResult> Id(string id, string order, int page = 1)
         {
             if (page == 0)
             {
@@ -54,9 +54,10 @@
             {
                 ItemsPerPage = ItemsPerPage,
                 PageNumber = page,
+                Order = order,
                 CarsCount = this.dealershipsService.GetDealershipsCarsCount(id),
                 DealershipInfo = this.dealershipsService.GetDealershipInfo(id),
-                DealershipCars = await this.dealershipsService.GetAllDealershipCars(page, id, userId, ItemsPerPage),
+                DealershipCars = this.dealershipsService.GetAllDealershipCars(page, id, userId, order, ItemsPerPage),
             };
 
             return this.View(viewModel);

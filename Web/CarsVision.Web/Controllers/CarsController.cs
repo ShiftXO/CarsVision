@@ -55,8 +55,9 @@
             {
                 ItemsPerPage = ItemsPerPage,
                 PageNumber = id,
+                Order = order,
                 CarsCount = this.carsService.GetCount(),
-                Cars = await this.carsService.GetAll(id, userId, ItemsPerPage),
+                Cars = this.carsService.GetAll(id, userId, order, ItemsPerPage),
             };
 
             return this.View(viewModel);

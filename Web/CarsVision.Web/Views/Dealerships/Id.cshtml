@@ -44,6 +44,19 @@
         }
     </div>
 </div>
+
+<div class="row mt-3">
+    <span class="mr-3">Current order : @Model.Order</span>
+    <a class="mr-2" asp-controller="Dealerships" asp-action="Id" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="1"
+       asp-route-order="Make/Model/Price">Make/Model/Price</a>
+    <a class="mr-2" asp-controller="Dealerships" asp-action="Id" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="1"
+       asp-route-order="Price Asc.">Price Asc.</a>
+    <a class="mr-2" asp-controller="Dealerships" asp-action="Id" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="1"
+       asp-route-order="Price Desc.">Price Desc.</a>
+    <a class="mr-2" asp-controller="Dealerships" asp-action="Id" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="1"
+       asp-route-order="Mileage">Mileage</a>
+</div>
+
 @foreach (var car in Model.DealershipCars)
 {
     <hr class="bg-primary" />
@@ -130,13 +143,13 @@
 <nav aria-label="...">
     <ul class="pagination justify-content-center">
         <li class="page-item @if (!Model.HasPreviousPage) { <text>disabled</text> }">
-            <a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@Model.PreviousPageNumber">Previous</a>
+            <a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@Model.PreviousPageNumber" asp-route-order="@Model.Order">Previous</a>
         </li>
         @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
         {
             if (i > 0)
             {
-                <li class="page-item"><a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@i">@i</a></li>
+                <li class="page-item"><a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@i" asp-route-order="@Model.Order">@i</a></li>
             }
         }
         <li class="page-item active" aria-current="page">
@@ -149,11 +162,11 @@
         {
             if (i <= Model.PagesCount)
             {
-                <li class="page-item"><a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@i">@i</a></li>
+                <li class="page-item"><a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@i" asp-route-order="@Model.Order">@i</a></li>
             }
         }
         <li class="page-item @if (!Model.HasNextPage) { <text>disabled</text> }">
-            <a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@Model.NextPageNumber">Next</a>
+            <a class="page-link" asp-route-id="@Model.DealershipInfo.UserId" asp-route-page="@Model.NextPageNumber" asp-route-order="@Model.Order">Next</a>
         </li>
     </ul>
 </nav>

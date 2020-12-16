@@ -4,6 +4,18 @@
     this.ViewData["Title"] = "All Cars, page " + Model.PageNumber;
 }
 
+<div class="row">
+    <span class="mr-3">Current order : @Model.Order</span>
+    <a class="mr-2" asp-controller="Cars" asp-action="All" asp-route-id="1"
+       asp-route-order="Make/Model/Price">Make/Model/Price</a>
+    <a class="mr-2" asp-controller="Cars" asp-action="All" asp-route-id="1"
+       asp-route-order="Price Asc.">Price Asc.</a>
+    <a class="mr-2" asp-controller="Cars" asp-action="All" asp-route-id="1"
+       asp-route-order="Price Desc.">Price Desc.</a>
+    <a class="mr-2" asp-controller="Cars" asp-action="All" asp-route-id="1"
+       asp-route-order="Mileage">Mileage</a>
+</div>
+
 @foreach (var car in Model.Cars)
 {
     <hr class="bg-primary" />

@@ -10,13 +10,11 @@
     {
         Task AddCarAsync(CreateCarInputModel carInput, string userId, string picturePath);
 
-        Task<IEnumerable<CarInListViewModel>> GetAll(int page, string userId, int itemsPerPage);
+        IEnumerable<CarInListViewModel> GetAll(int page, string userId, string order, int itemsPerPage);
 
-        (IEnumerable<CarInListViewModel> Cars, int Count) SearchCars<T>(CarsSearchInputModel car, string userId, int page, int itemsPerPage);
+        (IEnumerable<CarInListViewModel> Cars, int Count) SearchCars(CarsSearchInputModel car, string userId, int page, int itemsPerPage);
 
         int GetCount();
-
-        T GetById<T>(int id);
 
         SingleCarViewModel GetById(int id);
 

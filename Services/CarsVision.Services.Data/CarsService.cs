@@ -24,6 +24,7 @@
         private readonly IDeletableEntityRepository<Dealership> dealershipRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IRepository<Watchlist> watchlistRepository;
+        private readonly ICommonService commonService;
 
         public CarsService(
             IDeletableEntityRepository<Car> carRepository,
@@ -31,7 +32,8 @@
             IRepository<Color> colorRepository,
             IDeletableEntityRepository<Dealership> dealershipRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
-            IRepository<Watchlist> watchlistRepository)
+            IRepository<Watchlist> watchlistRepository,
+            ICommonService commonService)
         {
             this.carRepository = carRepository;
             this.makeRepository = makeRepository;
@@ -39,6 +41,7 @@
             this.dealershipRepository = dealershipRepository;
             this.userRepository = userRepository;
             this.watchlistRepository = watchlistRepository;
+            this.commonService = commonService;
         }
 
         public async Task AddCarAsync(CreateCarInputModel input, string userId, string picturePath)
@@ -102,10 +105,9 @@
             await this.carRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CarInListViewModel>> GetAll(int page, string userId, int itemsPerPage = 12)
+        public IEnumerable<CarInListViewModel> GetAll(int page, string userId, string order, int itemsPerPage = 12)
         {
-            var cars = await this.carRepository.AllAsNoTracking()
-                .OrderByDescending(x => x.Id)
+            var query = this.carRepository.AllAsNoTracking()
                 .Select(x => new CarInListViewModel
                 {
                     Id = x.Id,
@@ -121,13 +123,15 @@
                     Currency = x.Currency.ToString(),
                     CreatedOn = x.CreatedOn,
                     Price = (decimal)x.Price,
+                    PriceOrder = x.Currency == Currency.EUR ? ((decimal)x.Price * 1.96M) : x.Currency == Currency.USD ? ((decimal)x.Price * 1.61M) : (decimal)x.Price,
                     Description = x.Description,
                     PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
                 })
-                .Skip((page - 1) * itemsPerPage).Take(itemsPerPage)
-                .ToListAsync();
+                .AsQueryable();
 
-            return cars;
+            var orderModel = new CarsSearchInputModel { Order = order };
+            query = this.commonService.Filter(query, orderModel, page, itemsPerPage);
+            return query.Take(itemsPerPage).ToList();
         }
 
         public CarPostViewModel GetAllMakesAndColors()
@@ -139,15 +143,6 @@
             };
 
             return model;
-        }
-
-        public T GetById<T>(int id)
-        {
-            var car = this.carRepository.AllAsNoTracking()
-                .Where(x => x.Id == id)
-                .To<T>().FirstOrDefault();
-
-            return car;
         }
 
         public SingleCarViewModel GetById(int id)
@@ -205,7 +200,7 @@
             return this.carRepository.AllAsNoTracking().Count();
         }
 
-        public (IEnumerable<CarInListViewModel> Cars, int Count) SearchCars<T>(CarsSearchInputModel car, string userId, int page, int itemsPerPage)
+        public (IEnumerable<CarInListViewModel> Cars, int Count) SearchCars(CarsSearchInputModel car, string userId, int page, int itemsPerPage)
         {
             var query = this.carRepository.AllAsNoTracking()
                 .Select(x => new CarInListViewModel
@@ -220,6 +215,8 @@
                     Mileage = (int)x.Mileage,
                     ColorName = x.Color.Name,
                     UserPhoneNumber = x.User.PhoneNumber,
+                    EngineType = (EngineType)x.EngineType,
+                    Gearbox = (Gearbox)x.Gearbox,
                     Currency = x.Currency.ToString(),
                     CreatedOn = x.CreatedOn,
                     Price = (decimal)x.Price,
@@ -229,66 +226,7 @@
                 })
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(car.Make) && car.Make != "All")
-            {
-                query = query.Where(x => x.MakeName == car.Make);
-            }
-
-            if (!string.IsNullOrWhiteSpace(car.Model) && car.Model != "All")
-            {
-                query = query.Where(x => x.ModelName == car.Model);
-            }
-
-            if (car.EngineType != EngineType.Unknown)
-            {
-                query = query.Where(x => x.EngineType == car.EngineType);
-            }
-
-            if (car.Gearbox != Gearbox.None)
-            {
-                query = query.Where(x => x.Gearbox == car.Gearbox);
-            }
-
-            if (car.MinPrice > 0 && car.MaxPrice > 0)
-            {
-                query = query.Where(x => x.Price >= car.MinPrice && x.Price <= car.MaxPrice);
-            }
-            else if (car.MinPrice > 0)
-            {
-                query = query.Where(x => x.Price >= car.MinPrice);
-            }
-            else if (car.MaxPrice > 0)
-            {
-                query = query.Where(x => x.Price >= car.MaxPrice);
-            }
-
-            if (car.Year > 0)
-            {
-                query = query.Where(x => x.Year.Contains(car.Year.ToString()));
-            }
-
-            if (car.Order == "Make/Model/Price")
-            {
-                query = query.OrderBy(x => x.MakeName)
-                    .ThenBy(x => x.ModelName)
-                    .ThenBy(x => x.Price)
-                    .Skip((page - 1) * itemsPerPage);
-            }
-            else if (car.Order == "Price Asc.")
-            {
-                query = query.OrderBy(x => x.PriceOrder)
-                    .Skip((page - 1) * itemsPerPage);
-            }
-            else if (car.Order == "Price Desc.")
-            {
-                query = query.OrderByDescending(x => x.PriceOrder)
-                    .Skip((page - 1) * itemsPerPage);
-            }
-            else if (car.Order == "Mileage")
-            {
-                query = query.OrderBy(x => x.Mileage)
-                    .Skip((page - 1) * itemsPerPage);
-            }
+            query = this.commonService.Filter(query, car, page, itemsPerPage);
 
             return (query.Take(itemsPerPage).ToList(), query.ToList().Count);
         }

@@ -17,8 +17,6 @@
 
         public decimal MaxPrice { get; set; }
 
-        public string Order { get; set; }
-
         public int Year { get; set; }
 
         public EngineType EngineType { get; set; }
