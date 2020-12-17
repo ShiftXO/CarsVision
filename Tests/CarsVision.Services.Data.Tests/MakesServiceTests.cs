@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
 
     using CarsVision.Data;
+    using CarsVision.Data.Common.Repositories;
     using CarsVision.Data.Models;
     using CarsVision.Data.Repositories;
     using CarsVision.Services.Mapping;
@@ -16,31 +17,34 @@
 
     public class MakesServiceTests
     {
+        private readonly MakesService service;
+        private readonly ApplicationDbContext dbContext;
+        private readonly IDeletableEntityRepository<Make> makesRepository;
+
         public MakesServiceTests()
         {
-            this.InitializeMapper();
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
+            this.dbContext = new ApplicationDbContext(options);
+
+            this.makesRepository = new EfDeletableEntityRepository<Make>(this.dbContext);
+            this.service = new MakesService(this.makesRepository);
+            AutoMapperConfig.RegisterMappings(Assembly.Load("CarsVision.Web.ViewModels"));
         }
 
         [Fact]
         public async Task GetAllNamesShouldReturnAll()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                   .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            var dbContext = new ApplicationDbContext(options);
-
-            var repository = new EfDeletableEntityRepository<Make>(dbContext);
-
-            var service = new MakesService(repository);
             var make1 = new Make() { Id = 1, Name = "Vw", };
             var make2 = new Make() { Id = 2, Name = "audi", };
             var make3 = new Make() { Id = 3, Name = "bmw", };
 
-            dbContext.Add(make1);
-            dbContext.Add(make2);
-            dbContext.Add(make3);
-            await dbContext.SaveChangesAsync();
+            this.dbContext.Add(make1);
+            this.dbContext.Add(make2);
+            this.dbContext.Add(make3);
+            await this.dbContext.SaveChangesAsync();
 
-            var result = service.GetAllNames<MakesViewModel>();
+            var result = this.service.GetAllNames<MakesViewModel>();
 
             Assert.Equal(3, result.Count());
         }
@@ -48,29 +52,13 @@
         [Fact]
         public void GetAllNamesShouldReturnZero()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                   .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            var dbContext = new ApplicationDbContext(options);
-
-            var repository = new EfDeletableEntityRepository<Make>(dbContext);
-
-            var service = new MakesService(repository);
-
-            var result = service.GetAllNames<MakesViewModel>();
-
+            var result = this.service.GetAllNames<MakesViewModel>();
             Assert.Empty(result);
         }
 
         [Fact]
         public async Task GetMakeModelsShouldReturnAll()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                   .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            var dbContext = new ApplicationDbContext(options);
-
-            var repository = new EfDeletableEntityRepository<Make>(dbContext);
-
-            var service = new MakesService(repository);
             var make = new Make()
             {
                 Id = 1,
@@ -85,10 +73,10 @@
                 },
             };
 
-            dbContext.Add(make);
-            await dbContext.SaveChangesAsync();
+            this.dbContext.Add(make);
+            await this.dbContext.SaveChangesAsync();
 
-            var result = service.GetMakeModels(make.Name);
+            var result = this.service.GetMakeModels(make.Name);
 
             Assert.Equal("golf", result.First());
         }
@@ -96,13 +84,6 @@
         [Fact]
         public async Task GetMakeModelsShouldReturnZero()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                   .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            var dbContext = new ApplicationDbContext(options);
-
-            var repository = new EfDeletableEntityRepository<Make>(dbContext);
-
-            var service = new MakesService(repository);
             var make = new Make()
             {
                 Id = 1,
@@ -110,15 +91,12 @@
                 Models = new List<Model>(),
             };
 
-            dbContext.Add(make);
-            await dbContext.SaveChangesAsync();
+            this.dbContext.Add(make);
+            await this.dbContext.SaveChangesAsync();
 
-            var result = service.GetMakeModels(make.Name);
+            var result = this.service.GetMakeModels(make.Name);
 
             Assert.Empty(result);
         }
-
-        private void InitializeMapper() => AutoMapperConfig.
-            RegisterMappings(Assembly.Load("CarsVision.Web.ViewModels"));
     }
 }
