@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            return this.Redirect("/");
+            return this.Redirect("/Home/MyCars");
         }
 
         public IActionResult Id(int id)
