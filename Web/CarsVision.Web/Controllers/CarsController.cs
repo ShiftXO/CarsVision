@@ -39,7 +39,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> All(string order, int id = 1)
+        public async Task<IActionResult> All(string order = "Make/Model/Price", int id = 1)
         {
             if (id <= 0)
             {
