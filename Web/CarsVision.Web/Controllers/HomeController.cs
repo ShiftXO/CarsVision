@@ -140,7 +140,8 @@
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            await this.carsService.Delete(id);
+            var user = await this.userManager.GetUserAsync(this.User);
+            await this.carsService.Delete(id, user.Id);
             return this.Redirect("/Home/MyCars");
         }
 

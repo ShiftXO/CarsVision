@@ -267,11 +267,14 @@
             await this.carRepository.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int id, string userId)
         {
-            var car = this.carRepository.All().FirstOrDefault(x => x.Id == id);
-            this.carRepository.Delete(car);
-            await this.carRepository.SaveChangesAsync();
+            var car = this.carRepository.All().FirstOrDefault(x => x.Id == id && x.UserId == userId);
+            if (car != null)
+            {
+                this.carRepository.Delete(car);
+                await this.carRepository.SaveChangesAsync();
+            }
         }
 
         public async Task<int> IncreaseViews(int carId)
