@@ -252,7 +252,7 @@
 
             car.MakeId = make.Id;
             car.ModelId = modelId;
-            car.ColorId = colorId;
+            car.ColorId = colorId > 0 ? colorId : null;
             car.Price = input.Price;
             car.EngineType = input.EngineType;
             car.Gearbox = input.Gearbox;
