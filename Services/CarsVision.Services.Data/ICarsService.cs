@@ -12,6 +12,8 @@
 
         IEnumerable<CarInListViewModel> GetAll(int page, string userId, string order, int itemsPerPage);
 
+        IEnumerable<CarInListViewModel> GetNewest();
+
         (IEnumerable<CarInListViewModel> Cars, int Count) SearchCars(CarsSearchInputModel car, string userId, int page, int itemsPerPage);
 
         int GetCount();

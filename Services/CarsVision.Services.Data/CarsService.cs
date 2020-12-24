@@ -145,6 +145,29 @@
             return model;
         }
 
+        public IEnumerable<CarInListViewModel> GetNewest()
+        {
+            var query = this.carRepository.AllAsNoTracking()
+                .Select(x => new CarInListViewModel
+                {
+                    Id = x.Id,
+                    MakeName = x.Make.Name,
+                    ModelName = x.Model.Name,
+                    Modification = x.Modification,
+                    Location = x.Location,
+                    Mileage = (int)x.Mileage,
+                    Currency = x.Currency.ToString(),
+                    CreatedOn = x.CreatedOn,
+                    Price = (decimal)x.Price,
+                    PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
+                })
+                .OrderByDescending(x => x.CreatedOn)
+                .Take(8)
+                .AsQueryable();
+
+            return query.ToList();
+        }
+
         public SingleCarViewModel GetById(int id)
         {
             var dbCar = this.carRepository.AllAsNoTracking().Select(x => new { x.Id, x.UserId, x.Pictures, x.Make.Name, Model = x.Model.Name }).FirstOrDefault(x => x.Id == id);

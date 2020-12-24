@@ -34,7 +34,12 @@
         [HttpGet]
         public IActionResult Index()
         {
-            var viewModel = this.makesService.GetAllNames<MakesViewModel>();
+            var viewModel = new HomeViewModel
+            {
+                Data = this.makesService.GetAllNames<MakesViewModel>(),
+                Cars = this.carsService.GetNewest(),
+            };
+
             return this.View(viewModel);
         }
 

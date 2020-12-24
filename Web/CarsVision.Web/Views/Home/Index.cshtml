@@ -1,4 +1,4 @@
-﻿@model ICollection<CarsVision.Web.ViewModels.Home.MakesViewModel>
+﻿@model CarsVision.Web.ViewModels.Home.HomeViewModel
 @using CarsVision.Common
 @{
     this.ViewData["Title"] = "Home Page";
@@ -14,7 +14,7 @@
                 <label>Make</label>
                 <select id="makes" name="make" class="form-control" onchange="LoadModels()">
                     <option value="All">All</option>
-                    @foreach (var make in Model)
+                    @foreach (var make in Model.Data)
                     {
                         <option value="@make.Name">@make.Name</option>
                     }
@@ -73,4 +73,31 @@
         </div>
         <button class="btn btn-info my-4 btn-block" type="submit">Search</button>
     </form>
+
+    <div class="text-center text-primary"><h3>Newest cars</h3></div>
+    <div class="row">
+        @foreach (var car in Model.Cars)
+        {
+            <div class="col-sm-3 mt-3">
+                <div class="col align-content-sm-center">
+                    <a class="" asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                        <img src="@car.PictureUrl" class="mr-3 img-responsive d-block img-thumbnail carItem" alt="@car.MakeName @car.ModelName">
+                    </a>
+                </div>
+                <div class="col">
+                    <h5>
+                        <a asp-controller="Cars" asp-action="Id" asp-route-id="@car.Id">
+                            @car.CarTitle
+                        </a>
+                    </h5>
+                    <h5 class="font-weight-bold">
+                        @Math.Truncate(@car.Price) @car.Currency
+                    </h5>
+                    <div>Mileage @car.Mileage km</div>
+                    <div>Location @car.Location</div>
+                    <div>@car.CreatedOn.ToString("f")</div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
