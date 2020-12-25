@@ -139,6 +139,23 @@
                 <span asp-validation-for="Validity" class="text-danger"></span>
             </div>
         </div>
+
+        <div class="row">
+            @for (int i = 1; i <= 3; i++)
+            {
+                <div class="col-4 text-left">
+                    @foreach (var extra in Model.Extras.Skip((i - 1) * Model.Extras.Count() / 3).Take(Model.Extras.Count() / 3))
+                    {
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" value="@extra.Id" name="Extras">@extra.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
         <div class="form-row mb-3 text-left">
             <div class="col-6">
                 <label asp-for="Description"></label>
@@ -164,7 +181,8 @@
         <div class="modal-content">
             <div class="modal-body">
                 <h4>Info.</h4>
-                <p>Cars Vision suggests price for vihicle with those parameters arround <span class="text-primary" id="price"></span> BGN
+                <p>
+                    Cars Vision suggests price for vihicle with those parameters arround <span class="text-primary" id="price"></span> BGN
                 </p>
             </div>
             <div class="modal-footer">

@@ -62,6 +62,8 @@
 
         public ICollection<string> PictureUrls { get; set; }
 
+        public ICollection<string> Extras { get; set; }
+
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Car, SingleCarViewModel>()

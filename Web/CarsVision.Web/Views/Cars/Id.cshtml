@@ -174,6 +174,19 @@
         <div class="col float-right">This ad has been visited <span id="views" class="text-primary">@Model.Views</span> times.</div>
     </div>
     <div class="row">
+        @for (int i = 1; i <= 3; i++)
+        {
+            <div class="col">
+                <ul class="fa-ul">
+                    @foreach (var extra in Model.Extras.Skip((i - 1) * Model.Extras.Count() / 3).Take(Model.Extras.Count() / 3))
+                    {
+                        <li><span class="fa-li"><i class="fas fa-check text-primary"></i></span>@extra</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+    <div class="row mt-3">
         <div class="col">
             <div>Description</div>
             <span>@Model.Description</span>
@@ -197,7 +210,7 @@
 </div>
 
 @section scripts {
-<script>
+    <script>
     geocode('@Json.Serialize(Model.Location)', @Json.Serialize(apiKey));
     function geocode(locationString, apiKey) {
         var mapElement = document.getElementById('map');
@@ -214,14 +227,14 @@
         .then(function (response) {
             let result = response['data']['features'][0]['geometry']['coordinates'];
             mapboxgl.accessToken = apiKey;
-    
+
             var map = new mapboxgl.Map({
                 container: 'map', // container id
                 style: 'mapbox://styles/mapbox/streets-v11', // style URL
                 center: result, // starting position [lng, lat]
                 zoom: 13 // starting zoom
             });
-    
+
             var marker = new mapboxgl.Marker()
                 .setLngLat(result)
                 .addTo(map);
@@ -231,9 +244,9 @@
             console.log(error);
         })
     }
-</script>
-    
-<script>
+    </script>
+
+    <script>
         let views = document.getElementById('views');
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
@@ -244,5 +257,5 @@
         };
         xhr.open('GET', '/Cars/IncreaseViews?id=' + @Model.Id);
         xhr.send();
-</script>
+    </script>
 }

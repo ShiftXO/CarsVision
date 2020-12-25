@@ -29,6 +29,7 @@
                               new SettingsSeeder(),
                               new MakesModelsSeeder(),
                               new ColorsSeeder(),
+                              new ExtrasSeeder(),
                           };
 
             foreach (var seeder in seeders)

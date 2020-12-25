@@ -7,6 +7,7 @@
     using CarsVision.Data.Models;
     using CarsVision.Services.Mapping;
     using CarsVision.Web.ViewModels.Colors;
+    using CarsVision.Web.ViewModels.Extras;
     using CarsVision.Web.ViewModels.Home;
     using Microsoft.AspNetCore.Http;
 
@@ -16,6 +17,8 @@
         public IEnumerable<MakesViewModel> Makes { get; set; }
 
         public IEnumerable<ColorsViewModel> Colors { get; set; }
+
+        public IEnumerable<ExtrasViewModel> Extras { get; set; }
 
         [Required]
         public string Make { get; set; }

@@ -11,6 +11,7 @@
     using CarsVision.Services.Mapping;
     using CarsVision.Web.ViewModels.Cars;
     using CarsVision.Web.ViewModels.Colors;
+    using CarsVision.Web.ViewModels.Extras;
     using CarsVision.Web.ViewModels.Home;
     using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,7 @@
         private readonly IDeletableEntityRepository<Dealership> dealershipRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IRepository<Watchlist> watchlistRepository;
+        private readonly IRepository<Extra> extrasRepository;
         private readonly ICommonService commonService;
 
         public CarsService(
@@ -33,6 +35,7 @@
             IDeletableEntityRepository<Dealership> dealershipRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             IRepository<Watchlist> watchlistRepository,
+            IRepository<Extra> extrasRepository,
             ICommonService commonService)
         {
             this.carRepository = carRepository;
@@ -41,6 +44,7 @@
             this.dealershipRepository = dealershipRepository;
             this.userRepository = userRepository;
             this.watchlistRepository = watchlistRepository;
+            this.extrasRepository = extrasRepository;
             this.commonService = commonService;
         }
 
@@ -101,6 +105,14 @@
                 await picture.CopyToAsync(fileStream);
             }
 
+            if (input.Extras != null)
+            {
+                foreach (var extra in input.Extras)
+                {
+                    car.Extras.Add(new CarsExtras { CarId = car.Id, ExtraId = extra });
+                }
+            }
+
             await this.carRepository.AddAsync(car);
             await this.carRepository.SaveChangesAsync();
         }
@@ -138,8 +150,9 @@
         {
             var model = new CarPostViewModel
             {
-                Makes = this.makeRepository.AllAsNoTracking().Select(x => new MakesViewModel { Name = x.Name }).ToList(),
-                Colors = this.colorRepository.AllAsNoTracking().Select(x => new ColorsViewModel { Name = x.Name }).ToList(),
+                Makes = this.makeRepository.AllAsNoTracking().Select(x => new MakesViewModel { Name = x.Name }).OrderBy(x => x.Name).ToList(),
+                Colors = this.colorRepository.AllAsNoTracking().Select(x => new ColorsViewModel { Name = x.Name }).OrderBy(x => x.Name).ToList(),
+                Extras = this.extrasRepository.AllAsNoTracking().Select(x => new ExtrasViewModel { Id = x.Id, Name = x.Name }).ToList(),
             };
 
             return model;
@@ -198,6 +211,7 @@
                     Price = x.Price != null ? (decimal)x.Price : 0,
                     Views = x.Views != null ? (int)x.Views : 0,
                     PictureUrls = pictures,
+                    Extras = x.Extras.Select(x => x.Extra.Name).ToList(),
                 })
                 .FirstOrDefault();
 
