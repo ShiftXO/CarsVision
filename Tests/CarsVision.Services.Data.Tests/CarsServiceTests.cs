@@ -31,6 +31,7 @@
         private readonly Mock<IDeletableEntityRepository<Make>> mockMakeRepository;
         private readonly Mock<IDeletableEntityRepository<ApplicationUser>> mockUserRepository;
         private readonly Mock<IDeletableEntityRepository<Dealership>> mockDealershipRepository;
+        private readonly Mock<IRepository<Extra>> mockExtraRepository;
 
         public CarsServiceTests()
         {
@@ -42,6 +43,7 @@
             this.mockDealershipRepository = new Mock<IDeletableEntityRepository<Dealership>>();
             this.mockMakeRepository = new Mock<IDeletableEntityRepository<Make>>();
             this.mockColorRepository = new Mock<IRepository<Color>>();
+            this.mockExtraRepository = new Mock<IRepository<Extra>>();
             this.mockService = new CarsService(
                 this.mockCarRepository.Object,
                 this.mockMakeRepository.Object,
@@ -49,6 +51,7 @@
                 this.mockDealershipRepository.Object,
                 this.mockUserRepository.Object,
                 this.mockWatchlistRepository.Object,
+                this.mockExtraRepository.Object,
                 this.mockCommonService.Object);
             AutoMapperConfig.RegisterMappings(Assembly.Load("CarsVision.Web.ViewModels"));
         }
@@ -628,6 +631,7 @@
             var dealershipRepository = new EfDeletableEntityRepository<Dealership>(dbContext);
             var userRepository = new EfDeletableEntityRepository<ApplicationUser>(dbContext);
             var watchlistRepository = new EfDeletableEntityRepository<Watchlist>(dbContext);
+            var extrasRepository = new EfRepository<Extra>(dbContext);
             var mockCommonService = new Mock<ICommonService>();
 
             var service = new CarsService(
@@ -637,6 +641,7 @@
                 dealershipRepository,
                 userRepository,
                 watchlistRepository,
+                extrasRepository,
                 mockCommonService.Object);
 
             var date = DateTime.Now;
@@ -747,6 +752,7 @@
             var dealershipRepository = new EfDeletableEntityRepository<Dealership>(dbContext);
             var userRepository = new EfDeletableEntityRepository<ApplicationUser>(dbContext);
             var watchlistRepository = new EfDeletableEntityRepository<Watchlist>(dbContext);
+            var extrasRepository = new EfRepository<Extra>(dbContext);
             var mockCommonService = new Mock<ICommonService>();
 
             var service = new CarsService(
@@ -756,6 +762,7 @@
                 dealershipRepository,
                 userRepository,
                 watchlistRepository,
+                extrasRepository,
                 mockCommonService.Object);
 
             var date = DateTime.Now;
@@ -805,7 +812,7 @@
             await dbContext.AddAsync(car1);
             await dbContext.SaveChangesAsync();
 
-            await service.Delete(23);
+            await service.Delete(23, "userId");
             var dbCarsCount = dbContext.Cars.ToList().Count();
             Assert.Equal(1, dbCarsCount);
         }
@@ -823,6 +830,7 @@
             var dealershipRepository = new EfDeletableEntityRepository<Dealership>(dbContext);
             var userRepository = new EfDeletableEntityRepository<ApplicationUser>(dbContext);
             var watchlistRepository = new EfDeletableEntityRepository<Watchlist>(dbContext);
+            var extrasRepository = new EfRepository<Extra>(dbContext);
             var mockCommonService = new Mock<ICommonService>();
 
             var service = new CarsService(
@@ -832,6 +840,7 @@
                 dealershipRepository,
                 userRepository,
                 watchlistRepository,
+                extrasRepository,
                 mockCommonService.Object);
 
             var date = DateTime.Now;

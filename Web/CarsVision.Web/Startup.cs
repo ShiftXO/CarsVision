@@ -1,6 +1,9 @@
 ﻿namespace CarsVision.Web
 {
+    using System;
     using System.Reflection;
+
+    using CarsVision.Common;
 
     using CarsVision.Data;
     using CarsVision.Data.Common;
@@ -10,10 +13,14 @@
     using CarsVision.Data.Seeding;
     using CarsVision.Services;
     using CarsVision.Services.Data;
+    using CarsVision.Services.Hangfire.DeleteUserCars;
     using CarsVision.Services.Mapping;
     using CarsVision.Services.Messaging;
     using CarsVision.Web.ViewModels;
     using CarsVisionML.Model;
+    using Hangfire;
+    using Hangfire.Dashboard;
+    using Hangfire.SqlServer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -36,6 +43,22 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHangfire(
+               config => config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                   .UseSimpleAssemblyNameTypeSerializer()
+                   .UseRecommendedSerializerSettings()
+                   .UseSqlServerStorage(
+                       this.configuration.GetConnectionString("DefaultConnection"),
+                       new SqlServerStorageOptions
+                       {
+                           CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                           SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                           QueuePollInterval = TimeSpan.Zero,
+                           UseRecommendedIsolationLevel = true,
+                           UsePageLocksOnDequeue = true,
+                           DisableGlobalLocks = true,
+                       }));
+
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
 
@@ -74,7 +97,6 @@
             // Application services
             services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration["SendGrid:ApiKey"]));
             services.AddTransient<ISettingsService, SettingsService>();
-
             services.AddTransient<ICarsService, CarsService>();
             services.AddTransient<IMakesService, MakesService>();
             services.AddTransient<IColorsService, ColorsService>();
@@ -88,7 +110,7 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager)
         {
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
 
@@ -98,6 +120,7 @@
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
+                this.SeedHangfireJobs(recurringJobManager);
             }
 
             if (env.IsDevelopment())
@@ -127,6 +150,25 @@
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
                     });
+
+            app.UseHangfireServer(new BackgroundJobServerOptions { WorkerCount = 2 });
+            app.UseHangfireDashboard(
+                "/Administration/HangFire",
+                new DashboardOptions { Authorization = new[] { new HangfireAuthorizationFilter() } });
+        }
+
+        private void SeedHangfireJobs(IRecurringJobManager recurringJobManager)
+        {
+            recurringJobManager.AddOrUpdate<DeleteUserCars>("DeleteUserCars", x => x.DeleteCars(), Cron.Minutely);
+        }
+
+        private class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+        {
+            public bool Authorize(DashboardContext context)
+            {
+                var httpContext = context.GetHttpContext();
+                return httpContext.User.IsInRole(GlobalConstants.AdministratorRoleName);
+            }
         }
     }
 }

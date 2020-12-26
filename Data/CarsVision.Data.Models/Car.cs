@@ -57,6 +57,10 @@
 
         public string Description { get; set; }
 
+        // public Category Category { get; set; }
+
+        // public Condition Condition { get; set; }
+
         public virtual ICollection<Picture> Pictures { get; set; }
 
         public virtual ICollection<CarsExtras> Extras { get; set; }
