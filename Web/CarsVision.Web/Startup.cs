@@ -92,7 +92,7 @@
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // ML Service
-            services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromFile("C:\\Users\\Vlad\\Desktop\\C# Web\\CarsVision\\Web\\CarsVision.Web\\MLModels\\MLModel.zip");
+            services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromFile("MLModels/MLModel.zip");
 
             // Application services
             services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration["SendGrid:ApiKey"]));

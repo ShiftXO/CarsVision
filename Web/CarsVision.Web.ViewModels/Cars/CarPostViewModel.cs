@@ -51,7 +51,6 @@
         public Category Category { get; set; }
 
         [Required]
-        [Range(300, 2_000_000, ErrorMessage = "The field Price must be between 300 and 2 000 000.")]
         public int Price { get; set; }
 
         [Required]
