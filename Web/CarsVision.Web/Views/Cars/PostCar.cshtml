@@ -77,7 +77,7 @@
         <div class="form-row mb-3 text-left">
             <div class="col-sm-2">
                 <label asp-for="Price" class="text-required font-weight-bold"></label>
-                <input asp-for="Price" class="form-control" />
+                <input asp-for="Price" class="form-control price" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="For prices below 300 CarsVision reserves the right to make the price negotiable." />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="col-sm-2">
@@ -224,6 +224,11 @@
                     contentType: 'application/json',
                 });
             }
+        })
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
         })
     </script>
 }
