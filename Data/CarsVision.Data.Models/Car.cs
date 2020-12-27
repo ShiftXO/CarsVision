@@ -29,19 +29,21 @@
 
         public string Modification { get; set; }
 
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
 
-        public EngineType? EngineType { get; set; }
+        public EngineType EngineType { get; set; }
 
-        public Gearbox? Gearbox { get; set; }
+        public Gearbox Gearbox { get; set; }
 
         public int? Power { get; set; }
 
-        public string Year { get; set; }
+        public int Year { get; set; }
 
-        public int? Mileage { get; set; }
+        public byte Month { get; set; }
 
-        public int? Views { get; set; }
+        public int Mileage { get; set; }
+
+        public int Views { get; set; }
 
         public bool IsVIP { get; set; }
 
@@ -49,17 +51,17 @@
 
         public virtual Color Color { get; set; }
 
-        public EuroStandard? EuroStandard { get; set; }
+        public EuroStandard EuroStandard { get; set; }
 
-        public Currency? Currency { get; set; }
+        public Currency Currency { get; set; }
 
         public string Location { get; set; }
 
         public string Description { get; set; }
 
-        // public Category Category { get; set; }
+        public Category Category { get; set; }
 
-        // public Condition Condition { get; set; }
+        public Condition Condition { get; set; }
 
         public virtual ICollection<Picture> Pictures { get; set; }
 

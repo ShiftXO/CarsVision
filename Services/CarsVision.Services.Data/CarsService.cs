@@ -72,7 +72,11 @@
                 Modification = input.Modification,
                 Price = input.Price,
                 Power = input.Power,
-                Year = input.Month + " " + input.Year,
+                //Month = input.Month,
+                Views = 0,
+                //Condition = input.Condition,
+                Category = input.Category,
+                Year = int.Parse(input.Year),
                 Mileage = input.Mileage,
                 IsVIP = input.IsVIP,
                 Location = input.Location,
@@ -127,7 +131,7 @@
                     MakeName = x.Make.Name,
                     ModelName = x.Model.Name,
                     Modification = x.Modification,
-                    Year = x.Year,
+                    Year = x.Year.ToString(),
                     Location = x.Location,
                     Mileage = (int)x.Mileage,
                     ColorName = x.Color.Name,
@@ -201,7 +205,7 @@
                     CreatedOn = x.CreatedOn,
                     Location = x.Location,
                     Description = x.Description,
-                    Year = x.Year,
+                    Year = x.Year.ToString(),
                     Currency = (Currency)x.Currency,
                     EngineType = (EngineType)x.EngineType,
                     EuroStandard = (EuroStandard)x.EuroStandard,
@@ -247,7 +251,7 @@
                     MakeName = x.Make.Name,
                     ModelName = x.Model.Name,
                     Modification = x.Modification,
-                    Year = x.Year,
+                    Year = x.Year.ToString(),
                     Location = x.Location,
                     Mileage = (int)x.Mileage,
                     ColorName = x.Color.Name,
@@ -293,7 +297,7 @@
             car.Price = input.Price;
             car.EngineType = input.EngineType;
             car.Gearbox = input.Gearbox;
-            car.Year = input.Month + " " + input.Year;
+            car.Year = int.Parse(input.Year);
             car.Modification = input.Modification;
             car.Currency = input.Currency;
             car.Description = input.Description;

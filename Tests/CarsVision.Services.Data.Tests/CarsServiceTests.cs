@@ -131,7 +131,7 @@
             await this.mockService.AddCarAsync(inputModel, "userId", "wwwroot/images/cars/");
             Assert.Contains(cars, x => x.MakeId == 1);
             Assert.Contains(cars, x => x.ModelId == 1);
-            Assert.Contains(cars, x => x.Year == "Feb 1988");
+            Assert.Contains(cars, x => x.Year == 1988);
             Assert.Single(cars);
         }
 
@@ -234,7 +234,7 @@
                          Make = new Make { Name = "vw", },
                          Model = new Model { Id = 1, Name = "golf" },
                          Modification = "1.3",
-                         Year = "1988",
+                         Year = 1988,
                          Location = "krg",
                          Mileage = 10,
                          Color = new Color { Name = "white" },
@@ -274,7 +274,7 @@
                          Make = new Make { Name = "vw", },
                          Model = new Model { Id = 1, Name = "golf" },
                          Modification = "1.3",
-                         Year = "1988",
+                         Year = 1988,
                          Location = "krg",
                          Mileage = 10,
                          Color = new Color { Name = "white" },
@@ -292,7 +292,7 @@
                          Make = new Make { Name = "bmw", },
                          Model = new Model { Id = 1, Name = "e60" },
                          Modification = "3.0",
-                         Year = "2006",
+                         Year = 2006,
                          Location = "krg",
                          Mileage = 10,
                          Color = new Color { Name = "white" },
@@ -332,7 +332,7 @@
                          Make = new Make { Name = "vw", },
                          Model = new Model { Id = 1, Name = "golf" },
                          Modification = "1.3",
-                         Year = "1988",
+                         Year = 1988,
                          Location = "krg",
                          Mileage = 10,
                          Color = new Color { Name = "white" },
@@ -397,7 +397,7 @@
                          Make = new Make { Name = "vw", },
                          Model = new Model { Id = 1, Name = "golf" },
                          Modification = "1.3",
-                         Year = "1988",
+                         Year = 1988,
                          Location = "krg",
                          Mileage = 10,
                          Color = new Color { Name = "white" },
@@ -486,7 +486,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "1988",
+                         Year = 1988,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -563,7 +563,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "1988",
+                         Year = 1988,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -655,7 +655,7 @@
                 CreatedOn = date,
                 Location = "krg",
                 Description = "desc",
-                Year = "1988",
+                Year = 1988,
                 Currency = Currency.BGN,
                 EngineType = EngineType.Gasoline,
                 EuroStandard = EuroStandard.Euro_3,
@@ -732,7 +732,7 @@
             Assert.Equal("Automatic", dbCar.Gearbox.ToString());
             Assert.Equal(20000, dbCar.Price);
             Assert.Equal("BGN", dbCar.Currency.ToString());
-            Assert.Equal("Feb 2010", dbCar.Year);
+            Assert.Equal(2010, dbCar.Year);
             Assert.Equal(150, dbCar.Mileage);
             Assert.Equal("black", dbCar.Color.Name);
             Assert.Equal("sofiq", dbCar.Location);
@@ -776,7 +776,7 @@
                 CreatedOn = date,
                 Location = "krg",
                 Description = "desc",
-                Year = "1988",
+                Year = 1988,
                 Currency = Currency.BGN,
                 EngineType = EngineType.Gasoline,
                 EuroStandard = EuroStandard.Euro_3,
@@ -797,7 +797,7 @@
                 CreatedOn = date,
                 Location = "krg",
                 Description = "desc",
-                Year = "1988",
+                Year = 1988,
                 Currency = Currency.BGN,
                 EngineType = EngineType.Gasoline,
                 EuroStandard = EuroStandard.Euro_3,
@@ -854,7 +854,7 @@
                 CreatedOn = date,
                 Location = "krg",
                 Description = "desc",
-                Year = "1988",
+                Year = 1988,
                 Currency = Currency.BGN,
                 EngineType = EngineType.Gasoline,
                 EuroStandard = EuroStandard.Euro_3,
@@ -875,7 +875,7 @@
                 CreatedOn = date,
                 Location = "krg",
                 Description = "desc",
-                Year = "1988",
+                Year = 1988,
                 Currency = Currency.BGN,
                 EngineType = EngineType.Gasoline,
                 EuroStandard = EuroStandard.Euro_3,
@@ -883,7 +883,7 @@
                 Mileage = 10,
                 Power = 55,
                 Price = 500,
-                Views = null,
+                Views = 0,
                 UserId = "userId",
             };
             await dbContext.AddAsync(car);
@@ -926,7 +926,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "1988",
+                         Year = 1988,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -949,7 +949,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "2000",
+                         Year = 2000,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -1021,7 +1021,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "1988",
+                         Year = 1988,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -1044,7 +1044,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "2000",
+                         Year = 2000,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -1101,7 +1101,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "1988",
+                         Year = 1988,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -1124,7 +1124,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "2000",
+                         Year = 2000,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -1181,7 +1181,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "1988",
+                         Year = 1988,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,
@@ -1204,7 +1204,7 @@
                          CreatedOn = this.date,
                          Location = "krg",
                          Description = "desc",
-                         Year = "2000",
+                         Year = 2000,
                          Currency = Currency.BGN,
                          EngineType = EngineType.Gasoline,
                          EuroStandard = EuroStandard.Euro_3,

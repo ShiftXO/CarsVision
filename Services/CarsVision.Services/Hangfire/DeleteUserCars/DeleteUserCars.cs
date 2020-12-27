@@ -17,6 +17,16 @@
         public async Task DeleteCars()
         {
             // TODO: Delete cars after their validity expires.
+            //var cars = this.usersRepository.All().Select(x => x.Cars).FirstOrDefault();
+
+            //foreach (var user in users)
+            //{
+            //    var cars = user.Cars;
+            //}
+
+            //var car = cars.FirstOrDefault();
+            //car.Price = 999;
+            //await this.usersRepository.SaveChangesAsync();
         }
     }
 }

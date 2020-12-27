@@ -57,7 +57,7 @@
                     MakeName = x.Car.Make.Name,
                     ModelName = x.Car.Model.Name,
                     Modification = x.Car.Modification,
-                    Year = x.Car.Year,
+                    Year = x.Car.Year.ToString(),
                     Location = x.Car.Location,
                     Mileage = (int)x.Car.Mileage,
                     ColorName = x.Car.Color.Name,

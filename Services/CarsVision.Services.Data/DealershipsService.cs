@@ -102,7 +102,7 @@
                     MakeName = x.Make.Name,
                     ModelName = x.Model.Name,
                     Modification = x.Modification,
-                    Year = x.Year,
+                    Year = x.Year.ToString(),
                     Location = x.Location,
                     Mileage = (int)x.Mileage,
                     ColorName = x.Color.Name,
