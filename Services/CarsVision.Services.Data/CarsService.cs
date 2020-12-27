@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -70,21 +71,21 @@
                 ModelId = modelId,
                 UserId = userId,
                 Modification = input.Modification,
-                Price = input.Price,
+                Price = input.Price >= 300 ? input.Price : 0,
                 Power = input.Power,
-                //Month = input.Month,
+                Month = input.Month,
                 Views = 0,
-                //Condition = input.Condition,
+                Condition = input.Condition,
                 Category = input.Category,
-                Year = int.Parse(input.Year),
+                Year = input.Year,
                 Mileage = input.Mileage,
                 IsVIP = input.IsVIP,
                 Location = input.Location,
                 Description = input.Description,
-                EuroStandard = Enum.Parse<EuroStandard>(input.EuroStandard.ToString()),
-                Currency = Enum.Parse<Currency>(input.Currency.ToString()),
-                Gearbox = Enum.Parse<Gearbox>(input.Gearbox.ToString()),
-                EngineType = Enum.Parse<EngineType>(input.EngineType.ToString()),
+                EuroStandard = input.EuroStandard,
+                Currency = input.Currency,
+                Gearbox = input.Gearbox,
+                EngineType = input.EngineType,
                 ColorId = colorId,
             };
 
@@ -205,15 +206,16 @@
                     CreatedOn = x.CreatedOn,
                     Location = x.Location,
                     Description = x.Description,
-                    Year = x.Year.ToString(),
-                    Currency = (Currency)x.Currency,
-                    EngineType = (EngineType)x.EngineType,
-                    EuroStandard = (EuroStandard)x.EuroStandard,
-                    Gearbox = (Gearbox)x.Gearbox,
-                    Mileage = x.Mileage != null ? (int)x.Mileage : 0,
+                    Year = x.Year,
+                    Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(x.Month),
+                    Currency = x.Currency,
+                    EngineType = x.EngineType,
+                    EuroStandard = x.EuroStandard,
+                    Gearbox = x.Gearbox,
+                    Mileage = x.Mileage,
                     Power = x.Power != null ? (int)x.Power : 0,
-                    Price = x.Price != null ? (decimal)x.Price : 0,
-                    Views = x.Views != null ? (int)x.Views : 0,
+                    Price = x.Price,
+                    Views = x.Views,
                     PictureUrls = pictures,
                     Extras = x.Extras.Select(x => x.Extra.Name).ToList(),
                 })
@@ -253,15 +255,15 @@
                     Modification = x.Modification,
                     Year = x.Year.ToString(),
                     Location = x.Location,
-                    Mileage = (int)x.Mileage,
+                    Mileage = x.Mileage,
                     ColorName = x.Color.Name,
                     UserPhoneNumber = x.User.PhoneNumber,
-                    EngineType = (EngineType)x.EngineType,
-                    Gearbox = (Gearbox)x.Gearbox,
+                    EngineType = x.EngineType,
+                    Gearbox = x.Gearbox,
                     Currency = x.Currency.ToString(),
                     CreatedOn = x.CreatedOn,
-                    Price = (decimal)x.Price,
-                    PriceOrder = x.Currency == Currency.EUR ? ((decimal)x.Price * 1.96M) : x.Currency == Currency.USD ? ((decimal)x.Price * 1.61M) : (decimal)x.Price,
+                    Price = x.Price,
+                    PriceOrder = x.Currency == Currency.EUR ? (x.Price * 1.96M) : x.Currency == Currency.USD ? (x.Price * 1.61M) : x.Price,
                     Description = x.Description,
                     PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
                 })
@@ -321,17 +323,9 @@
         public async Task<int> IncreaseViews(int carId)
         {
             var car = this.carRepository.All().FirstOrDefault(x => x.Id == carId);
-            if (car.Views == null)
-            {
-                car.Views = 1;
-            }
-            else
-            {
-                car.Views++;
-            }
-
+            car.Views++;
             await this.carRepository.SaveChangesAsync();
-            return (int)car.Views;
+            return car.Views;
         }
     }
 }

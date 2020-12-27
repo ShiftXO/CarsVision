@@ -40,7 +40,9 @@
 
         public int Power { get; set; }
 
-        public string Year { get; set; }
+        public int Year { get; set; }
+
+        public string Month { get; set; }
 
         public int Mileage { get; set; }
 
