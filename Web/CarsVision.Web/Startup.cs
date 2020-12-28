@@ -59,6 +59,13 @@
                            DisableGlobalLocks = true,
                        }));
 
+            //services.AddAuthentication()
+            //    .AddGoogle(options =>
+            //    {
+            //        options.ClientId = this.configuration["GoogleAuthentication:ClientId"];
+            //        options.ClientSecret = this.configuration["GoogleAuthentication:ClientSecret"];
+            //    });
+
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
 
