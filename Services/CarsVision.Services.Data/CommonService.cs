@@ -45,7 +45,7 @@
 
             if (car.Year > 0)
             {
-                query = query.Where(x => x.Year.Contains(car.Year.ToString()));
+                query = query.Where(x => x.Year > car.Year);
             }
 
             if (car.Order == "Make/Model/Price")

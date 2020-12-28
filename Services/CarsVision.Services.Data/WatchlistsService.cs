@@ -7,7 +7,6 @@
     using CarsVision.Data.Common.Repositories;
     using CarsVision.Data.Models;
     using CarsVision.Web.ViewModels.Cars;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
     public class WatchlistsService : IWatchlistsService
@@ -57,13 +56,13 @@
                     MakeName = x.Car.Make.Name,
                     ModelName = x.Car.Model.Name,
                     Modification = x.Car.Modification,
-                    Year = x.Car.Year.ToString(),
+                    Year = x.Car.Year,
                     Location = x.Car.Location,
-                    Mileage = (int)x.Car.Mileage,
+                    Mileage = x.Car.Mileage,
                     ColorName = x.Car.Color.Name,
                     UserPhoneNumber = x.User.PhoneNumber,
                     CreatedOn = x.CreatedOn,
-                    Price = (decimal)x.Car.Price,
+                    Price = x.Car.Price,
                     Currency = x.Car.Currency.ToString(),
                     Description = x.Car.Description,
                     PictureUrl = x.Car.ImageUrl != null ? x.Car.ImageUrl : "/images/cars/" + x.Car.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Car.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,

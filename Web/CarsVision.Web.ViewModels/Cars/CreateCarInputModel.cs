@@ -37,7 +37,7 @@
         public Category Category { get; set; }
 
         [Required]
-        [Range(300, 2_000_000)]
+        [Range(0, 2_000_000)]
         public int Price { get; set; }
 
         [Required]
@@ -45,6 +45,7 @@
         public Currency Currency { get; set; }
 
         [Required]
+        [Range(1, 12)]
         public byte Month { get; set; }
 
         // [CurrentYearMaxValue(1930)]

@@ -19,7 +19,14 @@
                     {
                         <i class="far fa-heart float-right text-primary zoom" data-i-holder="@Model.Id" onclick="AddToWatchlist(@Model.Id)"></i>
                     }
-                    <strong class="float-right mr-3 text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                    @if (Model.Price >= 300)
+                    {
+                        <strong class="float-right mr-4">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                    }
+                    else
+                    {
+                        <strong class="float-right mr-4">On negotiable</strong>
+                    }
                 </h4>
             </div>
         </div>
@@ -61,7 +68,14 @@
             </div>
             <div class="col">
                 <h4>
-                    <strong class="float-right text-primary">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                    @if (Model.Price >= 300)
+                    {
+                        <strong class="float-right mr-4">@Math.Truncate(Model.Price) @Model.Currency</strong>
+                    }
+                    else
+                    {
+                        <strong class="float-right mr-4">On negotiable</strong>
+                    }
                 </h4>
             </div>
         </div>

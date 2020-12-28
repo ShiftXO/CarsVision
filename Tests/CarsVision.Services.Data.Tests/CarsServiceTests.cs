@@ -351,7 +351,7 @@
             Assert.Equal("vw", car.MakeName);
             Assert.Equal("golf", car.ModelName);
             Assert.Equal("1.3", car.Modification);
-            Assert.Equal("1988", car.Year);
+            Assert.Equal(1988, car.Year);
             Assert.Equal("krg", car.Location);
             Assert.Equal(10, car.Mileage);
             Assert.Equal("white", car.ColorName);
@@ -416,7 +416,7 @@
             Assert.Equal("vw", car.MakeName);
             Assert.Equal("golf", car.ModelName);
             Assert.Equal("1.3", car.Modification);
-            Assert.Equal("1988", car.Year);
+            Assert.Equal(1988, car.Year);
             Assert.Equal("krg", car.Location);
             Assert.Equal(10, car.Mileage);
             Assert.Equal("white", car.ColorName);
@@ -510,7 +510,7 @@
             Assert.Equal(this.date, car.CreatedOn);
             Assert.Equal("krg", car.Location);
             Assert.Equal("desc", car.Description);
-            Assert.Equal("1988", car.Year);
+            Assert.Equal(1988, car.Year);
             Assert.Equal("BGN", car.Currency.ToString());
             Assert.Equal("Gasoline", car.EngineType.ToString());
             Assert.Equal("Euro_3", car.EuroStandard.ToString());
@@ -587,7 +587,7 @@
             Assert.Equal(this.date, car.CreatedOn);
             Assert.Equal("krg", car.Location);
             Assert.Equal("desc", car.Description);
-            Assert.Equal("1988", car.Year);
+            Assert.Equal(1988, car.Year);
             Assert.Equal("BGN", car.Currency.ToString());
             Assert.Equal("Gasoline", car.EngineType.ToString());
             Assert.Equal("Euro_3", car.EuroStandard.ToString());
@@ -985,7 +985,7 @@
             Assert.Equal(this.date, result.Cars.FirstOrDefault().CreatedOn);
             Assert.Equal("krg", result.Cars.FirstOrDefault().Location);
             Assert.Equal("desc", result.Cars.FirstOrDefault().Description);
-            Assert.Equal("1988", result.Cars.FirstOrDefault().Year);
+            Assert.Equal(1988, result.Cars.FirstOrDefault().Year);
             Assert.Equal("BGN", result.Cars.FirstOrDefault().Currency.ToString());
             Assert.Equal("Gasoline", result.Cars.FirstOrDefault().EngineType.ToString());
             Assert.Equal("Manual", result.Cars.FirstOrDefault().Gearbox.ToString());

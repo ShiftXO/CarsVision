@@ -61,9 +61,9 @@
                 .Select(x => x.Id)
                 .FirstOrDefault();
 
-            var colorId = this.colorRepository.All()
-                .Select(x => x.Id)
-                .FirstOrDefault();
+            var color = this.colorRepository.All()
+                .Select(x => new { x.Id, x.Name })
+                .FirstOrDefault(x => x.Name == input.Color);
 
             var car = new Car
             {
@@ -86,7 +86,7 @@
                 Currency = input.Currency,
                 Gearbox = input.Gearbox,
                 EngineType = input.EngineType,
-                ColorId = colorId,
+                ColorId = color.Id,
             };
 
             // /wwwroot/images/cars/jhdsi-343g3h453-=g34g.jpg
@@ -132,15 +132,15 @@
                     MakeName = x.Make.Name,
                     ModelName = x.Model.Name,
                     Modification = x.Modification,
-                    Year = x.Year.ToString(),
+                    Year = x.Year,
                     Location = x.Location,
-                    Mileage = (int)x.Mileage,
+                    Mileage = x.Mileage,
                     ColorName = x.Color.Name,
                     UserPhoneNumber = x.User.PhoneNumber,
                     Currency = x.Currency.ToString(),
                     CreatedOn = x.CreatedOn,
-                    Price = (decimal)x.Price,
-                    PriceOrder = x.Currency == Currency.EUR ? ((decimal)x.Price * 1.96M) : x.Currency == Currency.USD ? ((decimal)x.Price * 1.61M) : (decimal)x.Price,
+                    Price = x.Price,
+                    PriceOrder = x.Currency == Currency.EUR ? (x.Price * 1.96M) : x.Currency == Currency.USD ? (x.Price * 1.61M) : x.Price,
                     Description = x.Description,
                     PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
                 })
@@ -173,10 +173,10 @@
                     ModelName = x.Model.Name,
                     Modification = x.Modification,
                     Location = x.Location,
-                    Mileage = (int)x.Mileage,
+                    Mileage = x.Mileage,
                     Currency = x.Currency.ToString(),
                     CreatedOn = x.CreatedOn,
-                    Price = (decimal)x.Price,
+                    Price = x.Price,
                     PictureUrl = x.ImageUrl != null ? x.ImageUrl : "/images/cars/" + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Id + "." + x.Pictures.OrderBy(x => x.CreatedOn).FirstOrDefault().Extension,
                 })
                 .OrderByDescending(x => x.CreatedOn)
@@ -253,7 +253,7 @@
                     MakeName = x.Make.Name,
                     ModelName = x.Model.Name,
                     Modification = x.Modification,
-                    Year = x.Year.ToString(),
+                    Year = x.Year,
                     Location = x.Location,
                     Mileage = x.Mileage,
                     ColorName = x.Color.Name,

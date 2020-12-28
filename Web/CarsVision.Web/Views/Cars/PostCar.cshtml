@@ -90,9 +90,10 @@
                 <label asp-for="Month" class="text-required font-weight-bold"></label>
                 <select asp-for="Month" class="form-control">
                     <option></option>
-                    @foreach (var month in DateTimeFormatInfo.InvariantInfo.MonthNames)
+                    @for (int i = 0; i < DateTimeFormatInfo.InvariantInfo.MonthNames.Length - 1; i++)
                     {
-                        <option value="@month">@month</option>
+                        var monthIndex = i + 1;
+                        <option value="@monthIndex">@DateTimeFormatInfo.InvariantInfo.MonthNames[i]</option>
                     }
                 </select>
                 <span asp-validation-for="Month" class="text-danger"></span>

@@ -21,7 +21,7 @@
 
         public string ModelName { get; set; }
 
-        public string Year { get; set; }
+        public int Year { get; set; }
 
         public int Mileage { get; set; }
 

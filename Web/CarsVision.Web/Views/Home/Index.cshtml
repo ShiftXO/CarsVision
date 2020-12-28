@@ -91,7 +91,14 @@
                         </a>
                     </h5>
                     <h5 class="font-weight-bold">
-                        @Math.Truncate(@car.Price) @car.Currency
+                        @if (car.Price >= 300)
+                        {
+                            @Math.Truncate(@car.Price) @car.Currency
+                        }
+                        else
+                        {
+                            <span>On negotiable</span>
+                        }
                     </h5>
                     <div>Mileage @car.Mileage km</div>
                     <div>Location @car.Location</div>

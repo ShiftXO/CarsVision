@@ -30,7 +30,14 @@
                             <a><i class="fas fa-heart float-right zoom text-primary" data-i-holder="@car.Id" onclick="AddToWatchlist(@car.Id)"></i></a>
                         }
                     }
-                    <strong class="float-right mr-4">@Math.Truncate(@car.Price) @car.Currency</strong>
+                    @if (car.Price >= 300)
+                    {
+                        <strong class="float-right mr-4">@Math.Truncate(car.Price) @car.Currency</strong>
+                    }
+                    else
+                    {
+                        <strong class="float-right mr-4">On negotiable</strong>
+                    }
                 </h5>
                 <span>Prod. year - @car.Year... Mileage - @car.Mileage...</span>
                 <span>Color - @car.ColorName... Location - @car.Location...</span>

@@ -191,7 +191,7 @@
             Assert.Equal("vw", car.MakeName);
             Assert.Equal("golf", car.ModelName);
             Assert.Equal("1.3", car.Modification);
-            Assert.Equal("1988", car.Year);
+            Assert.Equal(1988, car.Year);
             Assert.Equal("krg", car.Location);
             Assert.Equal(10, car.Mileage);
             Assert.Equal("white", car.ColorName);
