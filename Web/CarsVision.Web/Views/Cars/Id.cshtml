@@ -184,6 +184,13 @@
     <div class="row">
         <div class="col">
             <span>Created on: @Model.CreatedOn</span>
+            @if (this.User.Identity.IsAuthenticated)
+            {
+                @if (this.User.Claims.FirstOrDefault().Value == Model.UserId)
+                {
+                    <div>Will expire after: @Model.Validity days.</div>
+                }
+            }
         </div>
         <div class="col float-right">This ad has been visited <span id="views" class="text-primary">@Model.Views</span> times.</div>
     </div>

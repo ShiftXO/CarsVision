@@ -62,6 +62,8 @@
 
         public string PictureUrl { get; set; }
 
+        public byte Validity { get; set; }
+
         public ICollection<string> PictureUrls { get; set; }
 
         public ICollection<string> Extras { get; set; }

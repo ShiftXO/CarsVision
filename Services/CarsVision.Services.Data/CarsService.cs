@@ -217,6 +217,7 @@
                     Power = x.Power != null ? (int)x.Power : 0,
                     Price = x.Price,
                     Views = x.Views,
+                    Validity = x.Validity,
                     PictureUrls = pictures,
                     Extras = x.Extras.Select(x => x.Extra.Name).ToList(),
                 })
