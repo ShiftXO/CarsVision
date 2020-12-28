@@ -159,7 +159,7 @@
 
         private void SeedHangfireJobs(IRecurringJobManager recurringJobManager)
         {
-            recurringJobManager.AddOrUpdate<DeleteUserCars>("DeleteUserCars", x => x.DeleteCars(), Cron.Minutely);
+            recurringJobManager.AddOrUpdate<DeleteUserCars>("DeleteUserCars", x => x.DeleteCars(), Cron.Daily);
         }
 
         private class HangfireAuthorizationFilter : IDashboardAuthorizationFilter

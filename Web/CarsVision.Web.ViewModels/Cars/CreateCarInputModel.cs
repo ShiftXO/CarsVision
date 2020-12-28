@@ -61,7 +61,7 @@
         public string Location { get; set; }
 
         [Required]
-        public string Validity { get; set; }
+        public byte Validity { get; set; }
 
         public bool IsVIP { get; set; }
 

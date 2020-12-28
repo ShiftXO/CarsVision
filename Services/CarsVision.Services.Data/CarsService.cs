@@ -87,6 +87,7 @@
                 Gearbox = input.Gearbox,
                 EngineType = input.EngineType,
                 ColorId = color.Id,
+                Validity = input.Validity,
             };
 
             // /wwwroot/images/cars/jhdsi-343g3h453-=g34g.jpg
