@@ -297,10 +297,11 @@
             car.MakeId = make.Id;
             car.ModelId = modelId;
             car.ColorId = colorId > 0 ? colorId : null;
-            car.Price = input.Price;
+            car.Price = input.Price >= 300 ? input.Price : 0;
             car.EngineType = input.EngineType;
             car.Gearbox = input.Gearbox;
-            car.Year = int.Parse(input.Year);
+            car.Year = input.Year;
+            car.Month = input.Month;
             car.Modification = input.Modification;
             car.Currency = input.Currency;
             car.Description = input.Description;

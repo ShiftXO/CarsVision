@@ -77,7 +77,7 @@
         <div class="form-row mb-3 text-left">
             <div class="col-sm-2">
                 <label asp-for="Price" class="text-required font-weight-bold"></label>
-                <input asp-for="Price" class="form-control" />
+                <input asp-for="Price" class="form-control" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="For prices below 300 CarsVision reserves the right to make the price negotiable." />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="col-sm-2">
@@ -90,9 +90,10 @@
                 <label asp-for="Month" class="text-required font-weight-bold"></label>
                 <select asp-for="Month" class="form-control">
                     <option></option>
-                    @foreach (var month in DateTimeFormatInfo.InvariantInfo.MonthNames)
+                    @for (int i = 0; i < DateTimeFormatInfo.InvariantInfo.MonthNames.Length - 1; i++)
                     {
-                        <option value="@month">@month</option>
+                        var monthIndex = i + 1;
+                        <option value="@monthIndex">@DateTimeFormatInfo.InvariantInfo.MonthNames[i]</option>
                     }
                 </select>
                 <span asp-validation-for="Month" class="text-danger"></span>
@@ -130,14 +131,6 @@
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
-            <div class="col">
-                <label asp-for="Validity" class="text-required font-weight-bold"></label>
-                <select asp-for="Validity" class="form-control">
-                    <option value="35">35 Days</option>
-                    <option value="49">49 Days</option>
-                </select>
-                <span asp-validation-for="Validity" class="text-danger"></span>
-            </div>
         </div>
         <div class="form-row mb-3 text-left">
             <div class="col-6">
@@ -147,6 +140,14 @@
             <div class="col">
                 <div class="form-row mt-2">
                     <label class="text-primary">All colored in <b>blue</b> are required!</label>
+                </div>
+                <div class="col">
+                    <label asp-for="Validity" class="text-required font-weight-bold"></label>
+                    <div>
+                        <span class="text-danger">
+                            Your car listing will expire after @Model.Validity days. After expiration date will be deleted.
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -178,3 +179,11 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
+}

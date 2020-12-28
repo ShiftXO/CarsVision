@@ -45,7 +45,7 @@
         public Category Category { get; set; }
 
         [Required]
-        [Range(300, 2_000_000, ErrorMessage = "The field Price must be between 300 and 2 000 000.")]
+        [Range(0, 2_000_000, ErrorMessage = "The field Price must be between 300 and 2 000 000.")]
         public int Price { get; set; }
 
         [Required]
@@ -54,11 +54,11 @@
 
         [Display(Name = "Production month")]
         [Required(ErrorMessage = "Production month is required")]
-        public string Month { get; set; }
+        public byte Month { get; set; }
 
         [Display(Name = "Production year")]
         [Required(ErrorMessage = "Production year is required")]
-        public string Year { get; set; }
+        public int Year { get; set; }
 
         [Required]
         [Display(Name = "Mileage [km]")]
@@ -70,11 +70,10 @@
         [Required]
         public string Location { get; set; }
 
-        [Required]
-        public string Validity { get; set; }
+        public byte Validity { get; set; }
 
         [Required]
-        public string Condition { get; set; }
+        public Condition Condition { get; set; }
 
         public bool IsVIP { get; set; }
 
