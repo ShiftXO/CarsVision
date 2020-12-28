@@ -63,7 +63,7 @@
 
         public Condition Condition { get; set; }
 
-        //public byte Validity { get; set; }
+        public byte Validity { get; set; }
 
         public virtual ICollection<Picture> Pictures { get; set; }
 
